@@ -203,6 +203,9 @@ RISCV_EXTRAS_LEM = $(addprefix handwritten_support/,$(RISCV_EXTRAS_LEM_FILES))
 all: ocaml_emulator/riscv_ocaml_sim_$(ARCH) c_emulator/riscv_sim_$(ARCH)
 .PHONY: all
 
+json: $(SAIL_SRCS) model/main.sail Makefile
+	sail -plugin $(HOME)/projects/Sail/riscvdecode/riscv_decode.cmxs -riscv_decode $(SAIL_FLAGS) $(SAIL_SRCS)
+
 # the following ensures empty sail-generated .c files don't hang around and
 # break future builds if sail exits badly
 .DELETE_ON_ERROR: generated_definitions/c/%.c
