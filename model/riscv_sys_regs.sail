@@ -923,3 +923,15 @@ function get_vtype_vma() = decode_agtype(vtype[vma])
 
 val get_vtype_vta : unit -> agtype
 function get_vtype_vta() = decode_agtype(vtype[vta])
+
+val extension : (string) -> bool
+
+function extension(ext) = {
+  match ext {
+    "Atomics" => misa.A() == 0b1,
+    "Zfa" => true,
+    "Zfh" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
+    "Zicond" => true,
+    _ => false
+  }
+}
