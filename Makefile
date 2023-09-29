@@ -212,6 +212,12 @@ all: ocaml_emulator/riscv_ocaml_sim_$(ARCH) c_emulator/riscv_sim_$(ARCH)
 .PHONY: all
 
 json: $(SAIL_SRCS) model/main.sail Makefile
+	sail -json $(SAIL_FLAGS) $(SAIL_SRCS)
+
+output: $(SAIL_SRCS) model/main.sail Makefile
+	sail -output-sail $(SAIL_FLAGS) $(SAIL_SRCS)
+
+decode: $(SAIL_SRCS) model/main.sail Makefile
 	sail -plugin $(HOME)/projects/Sail/riscvdecode/riscv_decode.cmxs -riscv_decode $(SAIL_FLAGS) $(SAIL_SRCS)
 
 # the following ensures empty sail-generated .c files don't hang around and

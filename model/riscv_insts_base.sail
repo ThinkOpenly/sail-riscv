@@ -91,8 +91,19 @@ mapping clause assembly = RISCV_JAL(imm, rd)
   <-> "jal" ^ spc() ^ reg_name(rd) ^ sep() ^ hex_bits_signed_21(imm)
 
 /* ****************************************************************** */
+
+$[name jump and link register]
+/*!
+ * The target address is obtained by adding the sign-extended 12-bit
+ * I-immediate to the register rs1, then setting the
+ * least-significant bit of the result to zero. The address of the
+ * instruction following the jump (pc+4) is written to register rd.
+ * Register x0 can be used as the destination if the result is not
+ * required.
+ */
 union clause ast = RISCV_JALR : (bits(12), regidx, regidx)
 
+$[format I]
 mapping clause encdec = RISCV_JALR(imm, rs1, rd)
   <-> imm @ rs1 @ 0b000 @ rd @ 0b1100111
 
@@ -416,6 +427,7 @@ mapping clause assembly = STORE(imm, rs2, rs1, size, aq, rl)
 /* ****************************************************************** */
 union clause ast = ADDIW : (bits(12), regidx, regidx)
 
+$[format I]
 mapping clause encdec = ADDIW(imm, rs1, rd)
       if sizeof(xlen) == 64
   <-> imm @ rs1 @ 0b000 @ rd @ 0b0011011
@@ -524,6 +536,7 @@ mapping clause assembly = SHIFTIWOP(shamt, rs1, rd, op)
 /* ****************************************************************** */
 union clause ast = FENCE : (bits(4), bits(4))
 
+$[format I]
 mapping clause encdec = FENCE(pred, succ)
   <-> 0b0000 @ pred @ succ @ 0b00000 @ 0b000 @ 0b00000 @ 0b0001111
 
@@ -590,6 +603,7 @@ mapping clause assembly = FENCE(pred, succ)
 /* ****************************************************************** */
 union clause ast = FENCE_TSO : (bits(4), bits(4))
 
+$[format I]
 mapping clause encdec = FENCE_TSO(pred, succ)
   <-> 0b1000 @ pred @ succ @ 0b00000 @ 0b000 @ 0b00000 @ 0b0001111
 
@@ -715,6 +729,7 @@ mapping clause assembly = WFI() <-> "wfi"
 /* ****************************************************************** */
 union clause ast = SFENCE_VMA : (regidx, regidx)
 
+$[format R]
 mapping clause encdec = SFENCE_VMA(rs1, rs2)
   <-> 0b0001001 @ rs2 @ rs1 @ 0b000 @ 0b00000 @ 0b1110011
 
