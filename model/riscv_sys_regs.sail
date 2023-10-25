@@ -841,7 +841,6 @@ function read_seed_csr() -> xlenbits = {
 /* Writes to the seed CSR are ignored */
 function write_seed_csr () -> option(xlenbits) = None()
 
-<<<<<<< HEAD
 // menvcfg is 64 bits. senvcfg is SXLEN bits and does not have the two
 // upper fields so for simplicity we can use the same type.
 bitfield Envcfg : bits(64) = {
@@ -971,6 +970,10 @@ val extension : (string) -> bool
 function extension(ext) = {
   match ext {
     "Atomics" => misa.A() == 0b1,
+    "D" => (misa.D() == 0b1) & (mstatus.FS() != 0b00),
+    "F" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
+    "RVC" => misa.C() == 0b1,
+    "Zbkx" => true,
     "Zfa" => true,
     "Zfh" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
     "Zicond" => true,
