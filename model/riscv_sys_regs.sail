@@ -929,6 +929,10 @@ val extension : (string) -> bool
 function extension(ext) = {
   match ext {
     "Atomics" => misa.A() == 0b1,
+    "D" => (misa.D() == 0b1) & (mstatus.FS() != 0b00),
+    "F" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
+    "RVC" => misa.C() == 0b1,
+    "Zbkx" => true,
     "Zfa" => true,
     "Zfh" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
     "Zicond" => true,
