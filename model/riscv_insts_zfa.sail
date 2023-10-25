@@ -108,8 +108,8 @@ function clause execute (RISCV_FLI_S(constantidx, rd)) = {
 
 union clause ast = RISCV_FLI_D : (bits(5), regidx)
 
-mapping clause encdec = RISCV_FLI_D(rs1, rd)                if haveDExt() & extension("Zfa")
-  <-> 0b111_1001 @ 0b00001 @ rs1 @ 0b000 @ rd @ 0b101_0011  if haveDExt() & extension("Zfa")
+mapping clause encdec = RISCV_FLI_D(rs1, rd)                if extension("D") & extension("Zfa")
+  <-> 0b111_1001 @ 0b00001 @ rs1 @ 0b000 @ rd @ 0b101_0011  if extension("D") & extension("Zfa")
 
 mapping clause assembly = RISCV_FLI_D(constantidx, rd)
   <-> "fli.d" ^ spc() ^ freg_name(rd) ^ sep() ^ hex_bits_5(constantidx)
@@ -277,8 +277,8 @@ function clause execute (RISCV_FMAXM_S(rs2, rs1, rd)) = {
 
 union clause ast = RISCV_FMINM_D : (regidx, regidx, regidx)
 
-mapping clause encdec = RISCV_FMINM_D(rs2, rs1, rd)     if haveDExt() & extension("Zfa")
-  <-> 0b001_0101 @ rs2 @ rs1 @ 0b010 @ rd @ 0b101_0011  if haveDExt() & extension("Zfa")
+mapping clause encdec = RISCV_FMINM_D(rs2, rs1, rd)     if extension("D") & extension("Zfa")
+  <-> 0b001_0101 @ rs2 @ rs1 @ 0b010 @ rd @ 0b101_0011  if extension("D") & extension("Zfa")
 
 mapping clause assembly = RISCV_FMINM_D(rs2, rs1, rd)
   <-> "fminm.d" ^ spc() ^ freg_name(rd)
@@ -307,8 +307,8 @@ function clause execute (RISCV_FMINM_D(rs2, rs1, rd)) = {
 
 union clause ast = RISCV_FMAXM_D : (regidx, regidx, regidx)
 
-mapping clause encdec = RISCV_FMAXM_D(rs2, rs1, rd)     if haveDExt() & extension("Zfa")
-  <-> 0b001_0101 @ rs2 @ rs1 @ 0b011 @ rd @ 0b101_0011  if haveDExt() & extension("Zfa")
+mapping clause encdec = RISCV_FMAXM_D(rs2, rs1, rd)     if extension("D") & extension("Zfa")
+  <-> 0b001_0101 @ rs2 @ rs1 @ 0b011 @ rd @ 0b101_0011  if extension("D") & extension("Zfa")
 
 mapping clause assembly = RISCV_FMAXM_D(rs2, rs1, rd)
   <-> "fmaxm.d" ^ spc() ^ freg_name(rd)
@@ -449,8 +449,8 @@ function clause execute (RISCV_FROUNDNX_S(rs1, rm, rd)) = {
 
 union clause ast = RISCV_FROUND_D : (regidx, rounding_mode, regidx)
 
-mapping clause encdec = RISCV_FROUND_D(rs1, rm, rd)                            if haveDExt() & extension("Zfa")
-  <-> 0b010_0001 @ 0b00100 @ rs1 @ encdec_rounding_mode(rm) @ rd @ 0b101_0011  if haveDExt() & extension("Zfa")
+mapping clause encdec = RISCV_FROUND_D(rs1, rm, rd)                            if extension("D") & extension("Zfa")
+  <-> 0b010_0001 @ 0b00100 @ rs1 @ encdec_rounding_mode(rm) @ rd @ 0b101_0011  if extension("D") & extension("Zfa")
 
 mapping clause assembly = RISCV_FROUND_D(rs1, rm, rd)
   <-> "fround.d" ^ spc() ^ freg_name(rd)
@@ -477,8 +477,8 @@ function clause execute (RISCV_FROUND_D(rs1, rm, rd)) = {
 
 union clause ast = RISCV_FROUNDNX_D : (regidx, rounding_mode, regidx)
 
-mapping clause encdec = RISCV_FROUNDNX_D(rs1, rm, rd)                         if haveDExt() & extension("Zfa")
-  <-> 0b010_0001 @ 0b00101 @ rs1 @ encdec_rounding_mode(rm) @ rd @ 0b101_0011 if haveDExt() & extension("Zfa")
+mapping clause encdec = RISCV_FROUNDNX_D(rs1, rm, rd)                         if extension("D") & extension("Zfa")
+  <-> 0b010_0001 @ 0b00101 @ rs1 @ encdec_rounding_mode(rm) @ rd @ 0b101_0011 if extension("D") & extension("Zfa")
 
 mapping clause assembly = RISCV_FROUNDNX_D(rs1, rm, rd)
   <-> "froundnx.d" ^ spc() ^ freg_name(rd)
@@ -505,8 +505,8 @@ function clause execute (RISCV_FROUNDNX_D(rs1, rm, rd)) = {
 
 union clause ast = RISCV_FMVH_X_D : (regidx, regidx)
 
-mapping clause encdec   = RISCV_FMVH_X_D(rs1, rd)           if haveDExt() & extension("Zfa") & in32BitMode()
-  <-> 0b111_0001 @ 0b00001 @ rs1 @ 0b000 @ rd @ 0b101_0011  if haveDExt() & extension("Zfa") & in32BitMode()
+mapping clause encdec   = RISCV_FMVH_X_D(rs1, rd)           if extension("D") & extension("Zfa") & in32BitMode()
+  <-> 0b111_0001 @ 0b00001 @ rs1 @ 0b000 @ rd @ 0b101_0011  if extension("D") & extension("Zfa") & in32BitMode()
 
 mapping clause assembly = RISCV_FMVH_X_D(rs1, rd)
   <-> "fmvh.x.d" ^ spc() ^ reg_name(rd)
@@ -523,8 +523,8 @@ function clause execute (RISCV_FMVH_X_D(rs1, rd)) = {
 
 union clause ast = RISCV_FMVP_D_X : (regidx, regidx, regidx)
 
-mapping clause encdec = RISCV_FMVP_D_X(rs2, rs1, rd)        if haveDExt() & extension("Zfa") & in32BitMode()
-  <-> 0b101_1001 @ rs2 @ rs1 @ 0b000 @ rd @ 0b101_0011      if haveDExt() & extension("Zfa") & in32BitMode()
+mapping clause encdec = RISCV_FMVP_D_X(rs2, rs1, rd)        if extension("D") & extension("Zfa") & in32BitMode()
+  <-> 0b101_1001 @ rs2 @ rs1 @ 0b000 @ rd @ 0b101_0011      if extension("D") & extension("Zfa") & in32BitMode()
 
 mapping clause assembly = RISCV_FMVP_D_X(rs2, rs1, rd)
   <-> "fmvp.d.x" ^ spc() ^ freg_name(rd)
@@ -647,8 +647,8 @@ function clause execute(RISCV_FLTQ_S(rs2, rs1, rd)) = {
 
 union clause ast = RISCV_FLEQ_D : (regidx, regidx, regidx)
 
-mapping clause encdec = RISCV_FLEQ_D(rs2, rs1, rd)               if haveDExt() & extension("Zfa")
-  <-> 0b101_0001 @ rs2 @ rs1 @ 0b100 @ rd @ 0b101_0011           if haveDExt() & extension("Zfa")
+mapping clause encdec = RISCV_FLEQ_D(rs2, rs1, rd)               if extension("D") & extension("Zfa")
+  <-> 0b101_0001 @ rs2 @ rs1 @ 0b100 @ rd @ 0b101_0011           if extension("D") & extension("Zfa")
 
 mapping clause assembly = RISCV_FLEQ_D(rs2, rs1, rd)
   <-> "fleq.d" ^ spc() ^ freg_name(rd)
@@ -671,8 +671,8 @@ function clause execute(RISCV_FLEQ_D(rs2, rs1, rd)) = {
 
 union clause ast = RISCV_FLTQ_D : (regidx, regidx, regidx)
 
-mapping clause encdec = RISCV_FLTQ_D(rs2, rs1, rd)               if haveDExt() & extension("Zfa")
-  <-> 0b101_0001 @ rs2 @ rs1 @ 0b101 @ rd @ 0b101_0011           if haveDExt() & extension("Zfa")
+mapping clause encdec = RISCV_FLTQ_D(rs2, rs1, rd)               if extension("D") & extension("Zfa")
+  <-> 0b101_0001 @ rs2 @ rs1 @ 0b101 @ rd @ 0b101_0011           if extension("D") & extension("Zfa")
 
 mapping clause assembly = RISCV_FLTQ_D(rs2, rs1, rd)
   <-> "fltq.d" ^ spc() ^ freg_name(rd)
@@ -759,8 +759,8 @@ function fcvtmod_helper(x64) = {
 union clause ast = RISCV_FCVTMOD_W_D : (regidx, regidx)
 
 /* We need rounding mode to be explicitly specified to RTZ(0b001) */
-mapping clause encdec = RISCV_FCVTMOD_W_D(rs1, rd)          if haveDExt() & extension("Zfa")
-  <-> 0b110_0001 @ 0b01000 @ rs1 @ 0b001 @ rd @ 0b101_0011  if haveDExt() & extension("Zfa")
+mapping clause encdec = RISCV_FCVTMOD_W_D(rs1, rd)          if extension("D") & extension("Zfa")
+  <-> 0b110_0001 @ 0b01000 @ rs1 @ 0b001 @ rd @ 0b101_0011  if extension("D") & extension("Zfa")
 
 mapping clause assembly = RISCV_FCVTMOD_W_D(rs1, rd)
   <-> "fcvtmod.w.d" ^ spc() ^ reg_name(rd)
