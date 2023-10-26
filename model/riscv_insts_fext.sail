@@ -271,8 +271,8 @@ union clause ast = LOAD_FP : (bits(12), regidx, regidx, word_width)
 
 /* AST <-> Binary encoding ================================ */
 
-mapping clause encdec = LOAD_FP(imm, rs1, rd, HALF)          if haveZfh()
-                    <-> imm @ rs1 @ 0b001 @ rd @ 0b000_0111  if haveZfh()
+mapping clause encdec = LOAD_FP(imm, rs1, rd, HALF)          if extension("Zfh")
+                    <-> imm @ rs1 @ 0b001 @ rd @ 0b000_0111  if extension("Zfh")
 
 mapping clause encdec = LOAD_FP(imm, rs1, rd, WORD)          if extension("F")
                     <-> imm @ rs1 @ 0b010 @ rd @ 0b000_0111  if extension("F")
@@ -357,8 +357,8 @@ union clause ast = STORE_FP : (bits(12), regidx, regidx, word_width)
 
 /* AST <-> Binary encoding ================================ */
 
-mapping clause encdec = STORE_FP(imm7 @ imm5, rs2, rs1, HALF)                             if haveZfh()
-                    <-> imm7 : bits(7) @ rs2 @ rs1 @ 0b001 @ imm5 : bits(5) @ 0b010_0111  if haveZfh()
+mapping clause encdec = STORE_FP(imm7 @ imm5, rs2, rs1, HALF)                             if extension("Zfh")
+                    <-> imm7 : bits(7) @ rs2 @ rs1 @ 0b001 @ imm5 : bits(5) @ 0b010_0111  if extension("Zfh")
 
 mapping clause encdec = STORE_FP(imm7 @ imm5, rs2, rs1, WORD)                             if extension("F")
                     <-> imm7 : bits(7) @ rs2 @ rs1 @ 0b010 @ imm5 : bits(5) @ 0b010_0111  if extension("F")
