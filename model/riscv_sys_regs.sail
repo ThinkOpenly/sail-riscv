@@ -969,14 +969,34 @@ val extension : (string) -> bool
 
 function extension(ext) = {
   match ext {
-    "Atomics" => misa.A() == 0b1,
+    "A" => misa.A() == 0b1,
+    "C" => misa.C() == 0b1,
     "D" => (misa.D() == 0b1) & (mstatus.FS() != 0b00),
     "F" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
-    "RVC" => misa.C() == 0b1,
+    "M" => misa.M() == 0b1,
+    "N" => misa.N() == 0b1,
+    "U" => misa.U() == 0b1,
+    "S" => misa.S() == 0b1,
+    "Zba" => true,
+    "Zbb" => true,
+    "Zbc" => true,
+    "Zbkb" => true,
+    "Zbkc" => true,
     "Zbkx" => true,
+    "Zbs" => true,
     "Zfa" => true,
     "Zfh" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
+    "Zdinx" => sys_enable_zfinx() & sizeof(flen) >= 64,
+    "Zfinx" => sys_enable_zfinx(),
+    "Zhinx" => sys_enable_zfinx(),
     "Zicond" => true,
+    "Zkr" => true,
+    "Zksh" => true,
+    "Zksed" => true,
+    "Zknd" => true,
+    "Zkne" => true,
+    "Zknh" => true,
+    "Zmmul" => true,
     _ => false
   }
 }

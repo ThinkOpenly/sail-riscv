@@ -224,7 +224,7 @@ function fle_H   (v1,       v2,        is_quiet) = {
 /* **************************************************************** */
 /* Helper functions for 'encdec()'                                  */
 
-function haveHalfFPU() -> bool = haveZfh() | haveZhinx()
+function haveHalfFPU() -> bool = extension("Zfh") | haveZhinx()
 
 /* ****************************************************************** */
 /* Floating-point loads                                               */
@@ -943,11 +943,11 @@ union clause ast = F_UN_TYPE_H : (regidx, regidx, f_un_op_H)
 mapping clause encdec = F_UN_TYPE_H(rs1, rd, FCLASS_H)                        if haveHalfFPU()
                     <-> 0b111_0010 @ 0b00000 @ rs1 @ 0b001 @ rd @ 0b101_0011  if haveHalfFPU()
 
-mapping clause encdec = F_UN_TYPE_H(rs1, rd, FMV_X_H)                         if haveZfh()
-                    <-> 0b111_0010 @ 0b00000 @ rs1 @ 0b000 @ rd @ 0b101_0011  if haveZfh()
+mapping clause encdec = F_UN_TYPE_H(rs1, rd, FMV_X_H)                         if extension("Zfh")
+                    <-> 0b111_0010 @ 0b00000 @ rs1 @ 0b000 @ rd @ 0b101_0011  if extension("Zfh")
 
-mapping clause encdec = F_UN_TYPE_H(rs1, rd, FMV_H_X)                         if haveZfh()
-                    <-> 0b111_1010 @ 0b00000 @ rs1 @ 0b000 @ rd @ 0b101_0011  if haveZfh()
+mapping clause encdec = F_UN_TYPE_H(rs1, rd, FMV_H_X)                         if extension("Zfh")
+                    <-> 0b111_1010 @ 0b00000 @ rs1 @ 0b000 @ rd @ 0b101_0011  if extension("Zfh")
 
 /* Execution semantics ================================ */
 

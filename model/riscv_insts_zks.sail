@@ -76,10 +76,10 @@
 union clause ast = SM3P0 : (regidx, regidx)
 union clause ast = SM3P1 : (regidx, regidx)
 
-mapping clause encdec = SM3P0 (rs1, rd) if haveZksh()
+mapping clause encdec = SM3P0 (rs1, rd) if extension("Zksh")
   <-> 0b00 @ 0b01000 @ 0b01000 @ rs1 @ 0b001 @ rd @ 0b0010011
 
-mapping clause encdec = SM3P1 (rs1, rd) if haveZksh()
+mapping clause encdec = SM3P1 (rs1, rd) if extension("Zksh")
   <-> 0b00 @ 0b01000 @ 0b01001 @ rs1 @ 0b001 @ rd @ 0b0010011
 
 mapping clause assembly = SM3P0 (rs1, rd) <->
@@ -110,10 +110,10 @@ function clause execute (SM3P1(rs1, rd)) = {
 union clause ast = SM4ED : (bits(2), regidx, regidx, regidx)
 union clause ast = SM4KS : (bits(2), regidx, regidx, regidx)
 
-mapping clause encdec = SM4ED (bs, rs2, rs1, rd) if haveZksed()
+mapping clause encdec = SM4ED (bs, rs2, rs1, rd) if extension("Zksed")
   <-> bs @ 0b11000 @ rs2 @ rs1 @ 0b000 @ rd @ 0b0110011
 
-mapping clause encdec = SM4KS (bs, rs2, rs1, rd) if haveZksed()
+mapping clause encdec = SM4KS (bs, rs2, rs1, rd) if extension("Zksed")
   <-> bs @ 0b11010 @ rs2 @ rs1 @ 0b000 @ rd @ 0b0110011
 
 mapping clause assembly = SM4ED (bs, rs2, rs1, rd) <->
