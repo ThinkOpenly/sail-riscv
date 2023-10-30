@@ -167,7 +167,7 @@ function clause execute (C_SLLI_HINT(shamt, rsd)) = RETIRE_SUCCESS
 
 mapping clause assembly = C_SLLI_HINT(shamt, rsd)
       if shamt == 0b000000 | rsd == zreg
-  <-> "c.slli.hint." ^ spc() ^ reg_name(rsd) ^ "." ^ hex_bits_6(shamt)
+  <-> "c.slli.hint." ^ spc() ^ reg_name(rsd) ^ sep() ^ hex_bits_6(shamt)
       if shamt == 0b000000 | rsd == zreg
 
 /* ****************************************************************** */
