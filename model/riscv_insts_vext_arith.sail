@@ -70,8 +70,8 @@ mapping encdec_vvfunct6 : vvfunct6 <-> bits(6) = {
   VV_VSSRA         <-> 0b101011
 }
 
-mapping clause encdec = VVTYPE(funct6, vm, vs2, vs1, vd) if haveVExt()
-  <-> encdec_vvfunct6(funct6) @ vm @ vs2 @ vs1 @ 0b000 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VVTYPE(funct6, vm, vs2, vs1, vd) if extension("V")
+  <-> encdec_vvfunct6(funct6) @ vm @ vs2 @ vs1 @ 0b000 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VVTYPE(funct6, vm, vs2, vs1, vd)) = {
   let SEW_pow  = get_sew_pow();
@@ -204,8 +204,8 @@ mapping encdec_nvsfunct6 : nvsfunct6 <-> bits(6) = {
   NVS_VNSRA       <-> 0b101101
 }
 
-mapping clause encdec = NVSTYPE(funct6, vm, vs2, vs1, vd) if haveVExt()
-  <-> encdec_nvsfunct6(funct6) @ vm @ vs2 @ vs1 @ 0b000 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = NVSTYPE(funct6, vm, vs2, vs1, vd) if extension("V")
+  <-> encdec_nvsfunct6(funct6) @ vm @ vs2 @ vs1 @ 0b000 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(NVSTYPE(funct6, vm, vs2, vs1, vd)) = {
   let SEW      = get_sew();
@@ -271,8 +271,8 @@ mapping encdec_nvfunct6 : nvfunct6 <-> bits(6) = {
   NV_VNCLIP      <-> 0b101111
 }
 
-mapping clause encdec = NVTYPE(funct6, vm, vs2, vs1, vd) if haveVExt()
-  <-> encdec_nvfunct6(funct6) @ vm @ vs2 @ vs1 @ 0b000 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = NVTYPE(funct6, vm, vs2, vs1, vd) if extension("V")
+  <-> encdec_nvfunct6(funct6) @ vm @ vs2 @ vs1 @ 0b000 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(NVTYPE(funct6, vm, vs2, vs1, vd)) = {
   let SEW      = get_sew();
@@ -333,8 +333,8 @@ mapping clause assembly = NVTYPE(funct6, vm, vs2, vs1, vd)
 /* ********************** OPIVV (Integer Merge Instruction) ********************** */
 union clause ast = MASKTYPEV : (regidx, regidx, regidx)
 
-mapping clause encdec = MASKTYPEV (vs2, vs1,  vd) if haveVExt()
-  <-> 0b010111 @ 0b0 @ vs2 @ vs1 @ 0b000 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = MASKTYPEV (vs2, vs1,  vd) if extension("V")
+  <-> 0b010111 @ 0b0 @ vs2 @ vs1 @ 0b000 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(MASKTYPEV(vs2, vs1, vd)) = {
   let start_element = get_start_element();
@@ -381,8 +381,8 @@ mapping clause assembly = MASKTYPEV(vs2, vs1, vd)
 /* ********************** OPIVV (Integer Move Instruction) *********************** */
 union clause ast = MOVETYPEV : (regidx, regidx)
 
-mapping clause encdec = MOVETYPEV (vs1, vd) if haveVExt()
-  <-> 0b010111 @ 0b1 @ 0b00000 @ vs1 @ 0b000 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = MOVETYPEV (vs1, vd) if extension("V")
+  <-> 0b010111 @ 0b1 @ 0b00000 @ vs1 @ 0b000 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(MOVETYPEV(vs1, vd)) = {
   let SEW      = get_sew();
@@ -440,8 +440,8 @@ mapping encdec_vxfunct6 : vxfunct6 <-> bits(6) = {
   VX_VSSRA      <-> 0b101011
 }
 
-mapping clause encdec = VXTYPE(funct6, vm, vs2, rs1, vd) if haveVExt()
-  <-> encdec_vxfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b100 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VXTYPE(funct6, vm, vs2, rs1, vd) if extension("V")
+  <-> encdec_vxfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b100 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VXTYPE(funct6, vm, vs2, rs1, vd)) = {
   let SEW      = get_sew();
@@ -556,8 +556,8 @@ mapping encdec_nxsfunct6 : nxsfunct6 <-> bits(6) = {
   NXS_VNSRA       <-> 0b101101
 }
 
-mapping clause encdec = NXSTYPE(funct6, vm, vs2, rs1, vd) if haveVExt()
-  <-> encdec_nxsfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b100 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = NXSTYPE(funct6, vm, vs2, rs1, vd) if extension("V")
+  <-> encdec_nxsfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b100 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(NXSTYPE(funct6, vm, vs2, rs1, vd)) = {
   let SEW      = get_sew();
@@ -623,8 +623,8 @@ mapping encdec_nxfunct6 : nxfunct6 <-> bits(6) = {
   NX_VNCLIP      <-> 0b101111
 }
 
-mapping clause encdec = NXTYPE(funct6, vm, vs2, rs1, vd) if haveVExt()
-  <-> encdec_nxfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b100 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = NXTYPE(funct6, vm, vs2, rs1, vd) if extension("V")
+  <-> encdec_nxfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b100 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(NXTYPE(funct6, vm, vs2, rs1, vd)) = {
   let SEW      = get_sew();
@@ -692,8 +692,8 @@ mapping encdec_vxsgfunct6 : vxsgfunct6 <-> bits(6) = {
   VX_VRGATHER     <-> 0b001100
 }
 
-mapping clause encdec = VXSG(funct6, vm, vs2, rs1, vd) if haveVExt()
-  <-> encdec_vxsgfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b100 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VXSG(funct6, vm, vs2, rs1, vd) if extension("V")
+  <-> encdec_vxsgfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b100 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VXSG(funct6, vm, vs2, rs1, vd)) = {
   let SEW_pow  = get_sew_pow();
@@ -755,8 +755,8 @@ mapping clause assembly = VXSG(funct6, vm, vs2, rs1, vd)
 /* ********************** OPIVX (Integer Merge Instruction) ********************** */
 union clause ast = MASKTYPEX : (regidx, regidx, regidx)
 
-mapping clause encdec = MASKTYPEX(vs2, rs1, vd) if haveVExt()
-  <-> 0b010111 @ 0b0 @ vs2 @ rs1 @ 0b100 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = MASKTYPEX(vs2, rs1, vd) if extension("V")
+  <-> 0b010111 @ 0b0 @ vs2 @ rs1 @ 0b100 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(MASKTYPEX(vs2, rs1, vd)) = {
   let start_element = get_start_element();
@@ -803,8 +803,8 @@ mapping clause assembly = MASKTYPEX(vs2, rs1, vd)
 /* ********************** OPIVX (Integer Move Instruction) *********************** */
 union clause ast = MOVETYPEX : (regidx, regidx)
 
-mapping clause encdec = MOVETYPEX (rs1, vd) if haveVExt()
-  <-> 0b010111 @ 0b1 @ 0b00000 @ rs1 @ 0b100 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = MOVETYPEX (rs1, vd) if extension("V")
+  <-> 0b010111 @ 0b1 @ 0b00000 @ rs1 @ 0b100 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(MOVETYPEX(rs1, vd)) = {
   let SEW      = get_sew();
@@ -854,8 +854,8 @@ mapping encdec_vifunct6 : vifunct6 <-> bits(6) = {
   VI_VSSRA      <-> 0b101011
 }
 
-mapping clause encdec = VITYPE(funct6, vm, vs2, simm, vd) if haveVExt()
-  <-> encdec_vifunct6(funct6) @ vm @ vs2 @ simm @ 0b011 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VITYPE(funct6, vm, vs2, simm, vd) if extension("V")
+  <-> encdec_vifunct6(funct6) @ vm @ vs2 @ simm @ 0b011 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VITYPE(funct6, vm, vs2, simm, vd)) = {
   let SEW      = get_sew();
@@ -946,8 +946,8 @@ mapping encdec_nisfunct6 : nisfunct6 <-> bits(6) = {
   NIS_VNSRA       <-> 0b101101
 }
 
-mapping clause encdec = NISTYPE(funct6, vm, vs2, simm, vd) if haveVExt()
-  <-> encdec_nisfunct6(funct6) @ vm @ vs2 @ simm @ 0b011 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = NISTYPE(funct6, vm, vs2, simm, vd) if extension("V")
+  <-> encdec_nisfunct6(funct6) @ vm @ vs2 @ simm @ 0b011 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(NISTYPE(funct6, vm, vs2, simm, vd)) = {
   let SEW      = get_sew();
@@ -1013,8 +1013,8 @@ mapping encdec_nifunct6 : nifunct6 <-> bits(6) = {
   NI_VNCLIP      <-> 0b101111
 }
 
-mapping clause encdec = NITYPE(funct6, vm, vs2, simm, vd) if haveVExt()
-  <-> encdec_nifunct6(funct6) @ vm @ vs2 @ simm @ 0b011 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = NITYPE(funct6, vm, vs2, simm, vd) if extension("V")
+  <-> encdec_nifunct6(funct6) @ vm @ vs2 @ simm @ 0b011 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(NITYPE(funct6, vm, vs2, simm, vd)) = {
   let SEW      = get_sew();
@@ -1082,8 +1082,8 @@ mapping encdec_visgfunct6 : visgfunct6 <-> bits(6) = {
   VI_VRGATHER     <-> 0b001100
 }
 
-mapping clause encdec = VISG(funct6, vm, vs2, simm, vd) if haveVExt()
-  <-> encdec_visgfunct6(funct6) @ vm @ vs2 @ simm @ 0b011 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VISG(funct6, vm, vs2, simm, vd) if extension("V")
+  <-> encdec_visgfunct6(funct6) @ vm @ vs2 @ simm @ 0b011 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VISG(funct6, vm, vs2, simm, vd)) = {
   let SEW_pow  = get_sew_pow();
@@ -1145,8 +1145,8 @@ mapping clause assembly = VISG(funct6, vm, vs2, simm, vd)
 /* ********************** OPIVI (Integer Merge Instruction) ********************** */
 union clause ast = MASKTYPEI : (regidx, bits(5), regidx)
 
-mapping clause encdec = MASKTYPEI(vs2, simm, vd) if haveVExt()
-  <-> 0b010111 @ 0b0 @ vs2 @ simm @ 0b011 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = MASKTYPEI(vs2, simm, vd) if extension("V")
+  <-> 0b010111 @ 0b0 @ vs2 @ simm @ 0b011 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(MASKTYPEI(vs2, simm, vd)) = {
   let start_element = get_start_element();
@@ -1193,8 +1193,8 @@ mapping clause assembly = MASKTYPEI(vs2, simm, vd)
 /* ********************** OPIVI (Integer Move Instruction) *********************** */
 union clause ast = MOVETYPEI : (regidx, bits(5))
 
-mapping clause encdec = MOVETYPEI (vd, simm) if haveVExt()
-  <-> 0b010111 @ 0b1 @ 0b00000 @ simm @ 0b011 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = MOVETYPEI (vd, simm) if extension("V")
+  <-> 0b010111 @ 0b1 @ 0b00000 @ simm @ 0b011 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(MOVETYPEI(vd, simm)) = {
   let SEW      = get_sew();
@@ -1229,8 +1229,8 @@ mapping clause assembly = MOVETYPEI(vd, simm)
 /* ********************* OPIVI (Whole Vector Register Move) ********************** */
 union clause ast = VMVRTYPE : (regidx, bits(5), regidx)
 
-mapping clause encdec = VMVRTYPE(vs2, simm, vd) if haveVExt()
-  <-> 0b100111 @ 0b1 @ vs2 @ simm @ 0b011 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VMVRTYPE(vs2, simm, vd) if extension("V")
+  <-> 0b100111 @ 0b1 @ vs2 @ simm @ 0b011 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VMVRTYPE(vs2, simm, vd)) = {
   let start_element = get_start_element();
@@ -1287,8 +1287,8 @@ mapping encdec_mvvfunct6 : mvvfunct6 <-> bits(6) = {
   MVV_VREM        <-> 0b100011
 }
 
-mapping clause encdec = MVVTYPE(funct6, vm, vs2, vs1, vd) if haveVExt()
-  <-> encdec_mvvfunct6(funct6) @ vm @ vs2 @ vs1 @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = MVVTYPE(funct6, vm, vs2, vs1, vd) if extension("V")
+  <-> encdec_mvvfunct6(funct6) @ vm @ vs2 @ vs1 @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(MVVTYPE(funct6, vm, vs2, vs1, vd)) = {
   let SEW      = get_sew();
@@ -1396,8 +1396,8 @@ mapping encdec_mvvmafunct6 : mvvmafunct6 <-> bits(6) = {
   MVV_VNMSUB      <-> 0b101011
 }
 
-mapping clause encdec = MVVMATYPE(funct6, vm, vs2, vs1, vd) if haveVExt()
-  <-> encdec_mvvmafunct6(funct6) @ vm @ vs2 @ vs1 @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = MVVMATYPE(funct6, vm, vs2, vs1, vd) if extension("V")
+  <-> encdec_mvvmafunct6(funct6) @ vm @ vs2 @ vs1 @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(MVVMATYPE(funct6, vm, vs2, vs1, vd)) = {
   let SEW      = get_sew();
@@ -1456,8 +1456,8 @@ mapping encdec_wvvfunct6 : wvvfunct6 <-> bits(6) = {
   WVV_VWMULSU    <-> 0b111010
 }
 
-mapping clause encdec = WVVTYPE(funct6, vm, vs2, vs1, vd) if haveVExt()
-  <-> encdec_wvvfunct6(funct6) @ vm @ vs2 @ vs1 @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = WVVTYPE(funct6, vm, vs2, vs1, vd) if extension("V")
+  <-> encdec_wvvfunct6(funct6) @ vm @ vs2 @ vs1 @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(WVVTYPE(funct6, vm, vs2, vs1, vd)) = {
   let SEW      = get_sew();
@@ -1526,8 +1526,8 @@ mapping encdec_wvfunct6 : wvfunct6 <-> bits(6) = {
   WV_VSUBU      <-> 0b110110
 }
 
-mapping clause encdec = WVTYPE(funct6, vm, vs2, vs1, vd) if haveVExt()
-  <-> encdec_wvfunct6(funct6) @ vm @ vs2 @ vs1 @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = WVTYPE(funct6, vm, vs2, vs1, vd) if extension("V")
+  <-> encdec_wvfunct6(funct6) @ vm @ vs2 @ vs1 @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(WVTYPE(funct6, vm, vs2, vs1, vd)) = {
   let SEW      = get_sew();
@@ -1589,8 +1589,8 @@ mapping encdec_wmvvfunct6 : wmvvfunct6 <-> bits(6) = {
   WMVV_VWMACCSU  <-> 0b111111
 }
 
-mapping clause encdec =  WMVVTYPE(funct6, vm, vs2, vs1, vd) if haveVExt()
-  <-> encdec_wmvvfunct6(funct6) @ vm @ vs2 @ vs1 @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec =  WMVVTYPE(funct6, vm, vs2, vs1, vd) if extension("V")
+  <-> encdec_wmvvfunct6(funct6) @ vm @ vs2 @ vs1 @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(WMVVTYPE(funct6, vm, vs2, vs1, vd)) = {
   let SEW      = get_sew();
@@ -1650,8 +1650,8 @@ mapping vext2_vs1 : vext2funct6 <-> bits(5) = {
   VEXT2_SVF2  <-> 0b00111
 }
 
-mapping clause encdec = VEXT2TYPE(funct6, vm, vs2, vd) if haveVExt()
-  <-> 0b010010 @ vm @ vs2 @ vext2_vs1(funct6) @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VEXT2TYPE(funct6, vm, vs2, vd) if extension("V")
+  <-> 0b010010 @ vm @ vs2 @ vext2_vs1(funct6) @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VEXT2TYPE(funct6, vm, vs2, vd)) = {
   let SEW = get_sew();
@@ -1708,8 +1708,8 @@ mapping vext4_vs1 : vext4funct6 <-> bits(5) = {
   VEXT4_SVF4  <-> 0b00101
 }
 
-mapping clause encdec = VEXT4TYPE(funct6, vm, vs2, vd) if haveVExt()
-  <-> 0b010010 @ vm @ vs2 @ vext4_vs1(funct6) @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VEXT4TYPE(funct6, vm, vs2, vd) if extension("V")
+  <-> 0b010010 @ vm @ vs2 @ vext4_vs1(funct6) @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VEXT4TYPE(funct6, vm, vs2, vd)) = {
   let SEW = get_sew();
@@ -1766,8 +1766,8 @@ mapping vext8_vs1 : vext8funct6 <-> bits(5) = {
   VEXT8_SVF8  <-> 0b00011
 }
 
-mapping clause encdec = VEXT8TYPE(funct6, vm, vs2, vd) if haveVExt()
-  <-> 0b010010 @ vm @ vs2 @ vext8_vs1(funct6) @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VEXT8TYPE(funct6, vm, vs2, vd) if extension("V")
+  <-> 0b010010 @ vm @ vs2 @ vext8_vs1(funct6) @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VEXT8TYPE(funct6, vm, vs2, vd)) = {
   let SEW = get_sew();
@@ -1818,8 +1818,8 @@ mapping clause assembly = VEXT8TYPE(funct6, vm, vs2, vd)
 /* ************************ OPMVV (vmv.x.s in VWXUNARY0) ************************* */
 union clause ast = VMVXS : (regidx, regidx)
 
-mapping clause encdec = VMVXS(vs2, rd) if haveVExt()
-  <-> 0b010000 @ 0b1 @ vs2 @ 0b00000 @ 0b010 @ rd @ 0b1010111 if haveVExt()
+mapping clause encdec = VMVXS(vs2, rd) if extension("V")
+  <-> 0b010000 @ 0b1 @ vs2 @ 0b00000 @ 0b010 @ rd @ 0b1010111 if extension("V")
 
 function clause execute(VMVXS(vs2, rd)) = {
   let SEW      = get_sew();
@@ -1846,8 +1846,8 @@ mapping clause assembly = VMVXS(vs2, rd)
 /* ********************* OPMVV (Vector Compress Instruction) ********************* */
 union clause ast = MVVCOMPRESS : (regidx, regidx, regidx)
 
-mapping clause encdec = MVVCOMPRESS(vs2, vs1, vd) if haveVExt()
-  <-> 0b010111 @ 0b1 @ vs2 @ vs1 @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = MVVCOMPRESS(vs2, vs1, vd) if extension("V")
+  <-> 0b010111 @ 0b1 @ vs2 @ vs1 @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(MVVCOMPRESS(vs2, vs1, vd)) = {
   let start_element = get_start_element();
@@ -1920,8 +1920,8 @@ mapping encdec_mvxfunct6 : mvxfunct6 <-> bits(6) = {
   MVX_VREM          <-> 0b100011
 }
 
-mapping clause encdec = MVXTYPE(funct6, vm, vs2, rs1, vd) if haveVExt()
-  <-> encdec_mvxfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b110 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = MVXTYPE(funct6, vm, vs2, rs1, vd) if extension("V")
+  <-> encdec_mvxfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b110 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(MVXTYPE(funct6, vm, vs2, rs1, vd)) = {
   let SEW      = get_sew();
@@ -2040,8 +2040,8 @@ mapping encdec_mvxmafunct6 : mvxmafunct6 <-> bits(6) = {
   MVX_VNMSUB        <-> 0b101011
 }
 
-mapping clause encdec = MVXMATYPE(funct6, vm, vs2, rs1, vd) if haveVExt()
-  <-> encdec_mvxmafunct6(funct6) @ vm @ vs2 @ rs1 @ 0b110 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = MVXMATYPE(funct6, vm, vs2, rs1, vd) if extension("V")
+  <-> encdec_mvxmafunct6(funct6) @ vm @ vs2 @ rs1 @ 0b110 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(MVXMATYPE(funct6, vm, vs2, rs1, vd)) = {
   let SEW      = get_sew();
@@ -2101,8 +2101,8 @@ mapping encdec_wvxfunct6 : wvxfunct6 <-> bits(6) = {
   WVX_VWMULSU    <-> 0b111010
 }
 
-mapping clause encdec = WVXTYPE(funct6, vm, vs2, rs1, vd) if haveVExt()
-  <-> encdec_wvxfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b110 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = WVXTYPE(funct6, vm, vs2, rs1, vd) if extension("V")
+  <-> encdec_wvxfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b110 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(WVXTYPE(funct6, vm, vs2, rs1, vd)) = {
   let SEW      = get_sew();
@@ -2170,8 +2170,8 @@ mapping encdec_wxfunct6 : wxfunct6 <-> bits(6) = {
   WX_VSUBU      <-> 0b110110
 }
 
-mapping clause encdec = WXTYPE(funct6, vm, vs2, rs1, vd) if haveVExt()
-  <-> encdec_wxfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b110 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = WXTYPE(funct6, vm, vs2, rs1, vd) if extension("V")
+  <-> encdec_wxfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b110 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(WXTYPE(funct6, vm, vs2, rs1, vd)) = {
   let SEW      = get_sew();
@@ -2233,8 +2233,8 @@ mapping encdec_wmvxfunct6 : wmvxfunct6 <-> bits(6) = {
   WMVX_VWMACCSU   <-> 0b111111
 }
 
-mapping clause encdec = WMVXTYPE(funct6, vm, vs2, rs1, vd) if haveVExt()
-  <-> encdec_wmvxfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b110 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = WMVXTYPE(funct6, vm, vs2, rs1, vd) if extension("V")
+  <-> encdec_wmvxfunct6(funct6) @ vm @ vs2 @ rs1 @ 0b110 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(WMVXTYPE(funct6, vm, vs2, rs1, vd)) = {
   let SEW      = get_sew();
@@ -2289,8 +2289,8 @@ mapping clause assembly = WMVXTYPE(funct6, vm, vs2, rs1, vd)
 /* ****************************** OPMVX (VRXUNARY0) ****************************** */
 union clause ast = VMVSX : (regidx, regidx)
 
-mapping clause encdec = VMVSX(rs1, vd) if haveVExt()
-  <-> 0b010000 @ 0b1 @ 0b00000 @ rs1 @ 0b110 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VMVSX(rs1, vd) if extension("V")
+  <-> 0b010000 @ 0b1 @ 0b00000 @ rs1 @ 0b110 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VMVSX(rs1, vd)) = {
   let SEW      = get_sew();

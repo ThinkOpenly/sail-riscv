@@ -977,6 +977,7 @@ function extension(ext) = {
     "N" => misa.N() == 0b1,
     "U" => misa.U() == 0b1,
     "S" => misa.S() == 0b1,
+    "V" => (misa.V() == 0b1) & (mstatus.VS() != 0b00),
     "Zba" => true,
     "Zbb" => true,
     "Zbc" => true,

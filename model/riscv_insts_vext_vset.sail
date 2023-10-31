@@ -79,8 +79,8 @@ mapping encdec_vsetop : vsetop <-> bits(4) ={
   VSETVL  <-> 0b1000
 }
 
-mapping clause encdec = VSET_TYPE(op, ma, ta, sew, lmul, rs1, rd) if haveVExt()
-  <-> encdec_vsetop(op) @ ma @ ta @ sew @ lmul @ rs1 @ 0b111 @ rd @ 0b1010111 if haveVExt()
+mapping clause encdec = VSET_TYPE(op, ma, ta, sew, lmul, rs1, rd) if extension("V")
+  <-> encdec_vsetop(op) @ ma @ ta @ sew @ lmul @ rs1 @ 0b111 @ rd @ 0b1010111 if extension("V")
 
 function clause execute VSET_TYPE(op, ma, ta, sew, lmul, rs1, rd) = {
   let VLEN_pow      = get_vlen_pow();
@@ -162,8 +162,8 @@ mapping clause assembly = VSET_TYPE(op, ma, ta, sew, lmul, rs1, rd)
 /* ********************************* vsetivli ************************************ */
 union clause ast = VSETI_TYPE : ( bits(1), bits(1), bits(3), bits(3), regidx, regidx)
 
-mapping clause encdec = VSETI_TYPE(ma, ta, sew, lmul, uimm, rd) if haveVExt()
-  <-> 0b1100 @ ma @ ta @ sew @ lmul @ uimm @ 0b111 @ rd @ 0b1010111 if haveVExt()
+mapping clause encdec = VSETI_TYPE(ma, ta, sew, lmul, uimm, rd) if extension("V")
+  <-> 0b1100 @ ma @ ta @ sew @ lmul @ uimm @ 0b111 @ rd @ 0b1010111 if extension("V")
 
 function clause execute VSETI_TYPE(ma, ta, sew, lmul, uimm, rd) = {
   let VLEN_pow      = get_vlen_pow();

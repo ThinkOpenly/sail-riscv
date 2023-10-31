@@ -55,8 +55,8 @@ mapping encdec_mmfunct6 : mmfunct6 <-> bits(6) = {
   MM_VMXNOR    <-> 0b011111
 }
 
-mapping clause encdec = MMTYPE(funct6, vs2, vs1, vd) if haveVExt()
-  <-> encdec_mmfunct6(funct6) @ 0b1 @ vs2 @ vs1 @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = MMTYPE(funct6, vs2, vs1, vd) if extension("V")
+  <-> encdec_mmfunct6(funct6) @ 0b1 @ vs2 @ vs1 @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(MMTYPE(funct6, vs2, vs1, vd)) = {
   let SEW      = get_sew();
@@ -113,8 +113,8 @@ mapping clause assembly = MMTYPE(funct6, vs2, vs1, vd)
 /* ************************* OPMVV (vpopc in VWXUNARY0) ************************** */
 union clause ast = VCPOP_M : (bits(1), regidx, regidx)
 
-mapping clause encdec = VCPOP_M(vm, vs2, rd) if haveVExt()
-  <-> 0b010000 @ vm @ vs2 @ 0b10000 @ 0b010 @ rd @ 0b1010111 if haveVExt()
+mapping clause encdec = VCPOP_M(vm, vs2, rd) if extension("V")
+  <-> 0b010000 @ vm @ vs2 @ 0b10000 @ 0b010 @ rd @ 0b1010111 if extension("V")
 
 function clause execute(VCPOP_M(vm, vs2, rd)) = {
   let SEW      = get_sew();
@@ -149,8 +149,8 @@ mapping clause assembly = VCPOP_M(vm, vs2, rd)
 /* ************************* OPMVV (vfirst in VWXUNARY0) ************************* */
 union clause ast = VFIRST_M : (bits(1), regidx, regidx)
 
-mapping clause encdec = VFIRST_M(vm, vs2, rd) if haveVExt()
-  <-> 0b010000 @ vm @ vs2 @ 0b10001 @ 0b010 @ rd @ 0b1010111 if haveVExt()
+mapping clause encdec = VFIRST_M(vm, vs2, rd) if extension("V")
+  <-> 0b010000 @ vm @ vs2 @ 0b10001 @ 0b010 @ rd @ 0b1010111 if extension("V")
 
 function clause execute(VFIRST_M(vm, vs2, rd)) = {
   let SEW      = get_sew();
@@ -187,8 +187,8 @@ mapping clause assembly = VFIRST_M(vm, vs2, rd)
 /* ************************** OPMVV (vmsbf in VMUNARY0) ************************** */
 union clause ast = VMSBF_M : (bits(1), regidx, regidx)
 
-mapping clause encdec = VMSBF_M(vm, vs2, vd) if haveVExt()
-  <-> 0b010100 @ vm @ vs2 @ 0b00001 @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VMSBF_M(vm, vs2, vd) if extension("V")
+  <-> 0b010100 @ vm @ vs2 @ 0b00001 @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VMSBF_M(vm, vs2, vd)) = {
   let SEW      = get_sew();
@@ -228,8 +228,8 @@ mapping clause assembly = VMSBF_M(vm, vs2, vd)
 /* ************************** OPMVV (vmsif in VMUNARY0) ************************** */
 union clause ast = VMSIF_M : (bits(1), regidx, regidx)
 
-mapping clause encdec = VMSIF_M(vm, vs2, vd) if haveVExt()
-  <-> 0b010100 @ vm @ vs2 @ 0b00011 @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VMSIF_M(vm, vs2, vd) if extension("V")
+  <-> 0b010100 @ vm @ vs2 @ 0b00011 @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VMSIF_M(vm, vs2, vd)) = {
   let SEW      = get_sew();
@@ -269,8 +269,8 @@ mapping clause assembly = VMSIF_M(vm, vs2, vd)
 /* ************************** OPMVV (vmsof in VMUNARY0) ************************** */
 union clause ast = VMSOF_M : (bits(1), regidx, regidx)
 
-mapping clause encdec = VMSOF_M(vm, vs2, vd) if haveVExt()
-  <-> 0b010100 @ vm @ vs2 @ 0b00010 @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VMSOF_M(vm, vs2, vd) if extension("V")
+  <-> 0b010100 @ vm @ vs2 @ 0b00010 @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VMSOF_M(vm, vs2, vd)) = {
   let SEW      = get_sew();
@@ -314,8 +314,8 @@ mapping clause assembly = VMSOF_M(vm, vs2, vd)
 /* ************************** OPMVV (viota in VMUNARY0) ************************** */
 union clause ast = VIOTA_M : (bits(1), regidx, regidx)
 
-mapping clause encdec = VIOTA_M(vm, vs2, vd) if haveVExt()
-  <-> 0b010100 @ vm @ vs2 @ 0b10000 @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VIOTA_M(vm, vs2, vd) if extension("V")
+  <-> 0b010100 @ vm @ vs2 @ 0b10000 @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VIOTA_M(vm, vs2, vd)) = {
   let SEW      = get_sew();
@@ -355,8 +355,8 @@ mapping clause assembly = VIOTA_M(vm, vs2, vd)
 /* *************************** OPMVV (vid in VMUNARY0) *************************** */
 union clause ast = VID_V : (bits(1), regidx)
 
-mapping clause encdec = VID_V(vm, vd) if haveVExt()
-  <-> 0b010100 @ vm @ 0b00000 @ 0b10001 @ 0b010 @ vd @ 0b1010111 if haveVExt()
+mapping clause encdec = VID_V(vm, vd) if extension("V")
+  <-> 0b010100 @ vm @ 0b00000 @ 0b10001 @ 0b010 @ vd @ 0b1010111 if extension("V")
 
 function clause execute(VID_V(vm, vd)) = {
   let SEW      = get_sew();
