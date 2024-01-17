@@ -170,6 +170,25 @@ mapping clause assembly = RISCV_JALR(imm, rs1, rd)
 /* see riscv_jalr_seq.sail or riscv_jalr_rmem.sail for the execute clause. */
 
 /* ****************************************************************** */
+
+$[name branch type]
+/*!
+ * The target address for this branch instruction is determined by combining
+ * the sign-extended 13-bit immediate value with the contents of register rs1.
+ * Additionally, the least-significant bit of the result is set to zero.
+ * The condition for the branch is based on the specified operation (bop),
+ * which can be one of the following mnemonic codes:
+ *   - "beq"   : Branch if equal
+ *   - "bne"   : Branch if not equal
+ *   - "blt"   : Branch if less than (signed)
+ *   - "bge"   : Branch if greater than or equal to (signed)
+ *   - "bltu"  : Branch if less than (unsigned)
+ *   - "bgeu"  : Branch if greater than or equal to (unsigned)
+ *
+ * The branch is taken if the specified condition is true, leading to a jump
+ * to the target address. If the branch is not taken, the execution proceeds
+ * to the next instruction.
+ */
 union clause ast = BTYPE : (bits(13), regidx, regidx, bop)
 
 mapping encdec_bop : bop <-> bits(3) = {
@@ -229,6 +248,23 @@ mapping clause assembly = BTYPE(imm, rs2, rs1, op)
   <-> btype_mnemonic(op) ^ spc() ^ reg_name(rs1) ^ sep() ^ reg_name(rs2) ^ sep() ^ hex_bits_13(imm)
 
 /* ****************************************************************** */
+
+$[name immediate type instruction]
+/*!
+ * The ITYPE instruction operates on an immediate value, adding, comparing, or
+ * performing bitwise operations with the contents of register rs1.
+ * The immediate value, rs1, and the operation code (iop) determine the operation.
+ * The result is stored in register rd.
+ * The supported immediate operations (iop) include:
+ *   - "addi"  : Add immediate
+ *   - "slti"  : Set less than immediate (signed)
+ *   - "sltiu" : Set less than immediate (unsigned)
+ *   - "andi"  : AND immediate
+ *   - "ori"   : OR immediate
+ *   - "xori"  : XOR immediate
+ *
+ * Note: The immediate value is sign-extended before performing the operation.
+ */
 union clause ast = ITYPE : (bits(12), regidx, regidx, iop)
 
 mapping encdec_iop : iop <-> bits(3) = {
@@ -271,6 +307,20 @@ mapping clause assembly = ITYPE(imm, rs1, rd, op)
   <-> itype_mnemonic(op) ^ spc() ^ reg_name(rd) ^ sep() ^ reg_name(rs1) ^ sep() ^ hex_bits_12(imm)
 
 /* ****************************************************************** */
+
+$[name shift immediate Operation]
+/*!
+ * The SHIFTIOP (Shift Immediate Operation) instruction format is used for
+ * operations that involve shifting the bits of a register by an immediate
+ * value. The specific operation is determined by the opcode field, and the
+ * shift amount is specified by the immediate value (shamt). The result is
+ * written to the destination register (rd), and the source operand is the
+ * register specified by rs1. The format is common for shift-left logical
+ * immediate (SLLI), shift-right logical immediate (SRLI), and shift-right
+ * arithmetic immediate (SRAI) operations.
+ *
+ * Note: For RV32, the decoder ensures that shamt[5] = 0.
+ */
 union clause ast = SHIFTIOP : (bits(6), regidx, regidx, sop)
 
 mapping encdec_sop : sop <-> bits(3) = {
@@ -311,6 +361,16 @@ mapping clause assembly = SHIFTIOP(shamt, rs1, rd, op)
   <-> shiftiop_mnemonic(op) ^ spc() ^ reg_name(rd) ^ sep() ^ reg_name(rs1) ^ sep() ^ hex_bits_6(shamt)
 
 /* ****************************************************************** */
+
+$[name register type instruction]
+/*!
+ * The R-type (Register-type) instruction format is used for operations
+ * that involve three registers. The specific operation is determined
+ * by the opcode and funct7 fields. The result is written to the
+ * destination register (rd), and the source operands are specified
+ * by the source registers (rs1 and rs2). The format is common for
+ * arithmetic, logical, and shift operations.
+ */
 union clause ast = RTYPE : (regidx, regidx, regidx, rop)
 
 mapping clause encdec = RTYPE(rs2, rs1, rd, RISCV_ADD)  <-> 0b0000000 @ rs2 @ rs1 @ 0b000 @ rd @ 0b0110011
@@ -366,6 +426,16 @@ mapping clause assembly = RTYPE(rs2, rs1, rd, op)
   <-> rtype_mnemonic(op) ^ spc() ^ reg_name(rd) ^ sep() ^ reg_name(rs1) ^ sep() ^ reg_name(rs2)
 
 /* ****************************************************************** */
+
+$[name Load Operation]
+/*!
+ * The LOAD instruction format is used for loading data from memory into a
+ * register. The specific operation is determined by the word width (size),
+ * whether the load is signed or unsigned (is_unsigned), and memory ordering
+ * semantics (acquire, release). The result is written to the destination
+ * register (rd), and the memory address is computed by adding the immediate
+ * offset (imm) to the value in register rs1.
+ */
 union clause ast = LOAD : (bits(12), regidx, regidx, bool, word_width, bool, bool)
 
 /* unsigned loads are only present for widths strictly less than xlen,
@@ -444,6 +514,15 @@ mapping clause assembly = LOAD(imm, rs1, rd, is_unsigned, size, aq, rl)
   <-> "l" ^ size_mnemonic(size) ^ maybe_u(is_unsigned) ^ maybe_aq(aq) ^ maybe_rl(rl) ^ spc() ^ reg_name(rd) ^ sep() ^ hex_bits_12(imm) ^ opt_spc() ^ "(" ^ opt_spc() ^ reg_name(rs1) ^ opt_spc() ^ ")"
 
 /* ****************************************************************** */
+
+$[name Store Operation]
+/*!
+ * The STORE instruction format is used for storing data from a register into
+ * memory. The specific operation is determined by the word width (size) and
+ * memory ordering semantics (acquire, release). The memory address is computed
+ * by adding the immediate offset (imm) to the value in register rs1, and the
+ * data is taken from register rs2.
+ */
 union clause ast = STORE : (bits(12), regidx, regidx, word_width, bool, bool)
 
 mapping clause encdec = STORE(imm7 @ imm5, rs2, rs1, size, false, false)              if word_width_bytes(size) <= sizeof(xlen_bytes)
@@ -497,6 +576,16 @@ mapping clause assembly = STORE(imm, rs2, rs1, size, aq, rl)
   <-> "s" ^ size_mnemonic(size) ^ maybe_aq(aq) ^ maybe_rl(rl) ^ spc() ^ reg_name(rs2) ^ sep() ^ hex_bits_12(imm) ^ opt_spc() ^ "(" ^ opt_spc() ^ reg_name(rs1) ^ opt_spc() ^ ")"
 
 /* ****************************************************************** */
+$[name Add Immediate Word]
+/*!
+ * The ADDIW instruction involves adding a sign-extended
+ * 12-bit immediate value to the content of register rs1. The result is a 32-bit
+ * value, and overflow is disregarded. The final outcome is the lower 32 bits of
+ * the result, sign-extended to 64 bits. If the immediate value is set to zero
+ * in the ADDIW rd, rs1, 0 operation, the sign-extension of the lower 32 bits
+ * of register rs1 is written to register rd.
+ */
+
 union clause ast = ADDIW : (bits(12), regidx, regidx)
 
 $[format I]
@@ -517,6 +606,17 @@ mapping clause assembly = ADDIW(imm, rs1, rd)
       if sizeof(xlen) == 64
 
 /* ****************************************************************** */
+
+$[name Register-Type Word Operation]
+/*!
+ * The RTYPEW instruction set operates on 32-bit values,
+ * and the result is sign-extended to 64 bits. The available operations are
+ * ADDW (addition), SUBW (subtraction), SLLW (logical left shift),
+ * SRLW (logical right shift), and SRAW (arithmetic right shift).
+ * These operations are only applicable when the width of the target
+ * architecture is 64 bits.
+ */
+
 union clause ast = RTYPEW : (regidx, regidx, regidx, ropw)
 
 mapping clause encdec = RTYPEW(rs2, rs1, rd, RISCV_ADDW)
@@ -568,6 +668,16 @@ mapping clause assembly = RTYPEW(rs2, rs1, rd, op)
       if sizeof(xlen) == 64
 
 /* ****************************************************************** */
+$[name Shift Immediate Word Operation]
+/*!
+ * The SHIFTIWOP instruction set deals with
+ * immediate shift operations on 32-bit values, with the result sign-extended
+ * to 64 bits. The available operations include SLLIW (left shift logical
+ * immediate word), SRLIW (right shift logical immediate word), and SRAIW
+ * (right shift arithmetic immediate word). These operations are applicable
+ * when the target architecture has a width of 64 bits.
+ */
+
 union clause ast = SHIFTIWOP : (bits(5), regidx, regidx, sopw)
 
 mapping clause encdec = SHIFTIWOP(shamt, rs1, rd, RISCV_SLLIW)
@@ -606,6 +716,26 @@ mapping clause assembly = SHIFTIWOP(shamt, rs1, rd, op)
       if sizeof(xlen) == 64
 
 /* ****************************************************************** */
+
+$[name FENCE Operation]
+/*!
+ * The FENCE instruction is used to provide memory ordering guarantees.
+ * It specifies ordering constraints on memory operations that precede
+ * and follow it in program order. The FENCE instruction includes two
+ * 4-bit fields, 'pred' and 'succ', which represent the memory ordering
+ * requirements before and after the FENCE instruction, respectively.
+ *
+ * The bits in 'pred' and 'succ' represent the following ordering constraints:
+ * - 'i': instruction stream order
+ * - 'o': outstanding loads
+ * - 'r': read operations
+ * - 'w': write operations
+ *
+ * The FENCE instruction is used to control the visibility of memory
+ * operations, and its behavior is influenced by the 'pred' and 'succ'
+ * fields. The precise semantics of the FENCE instruction depend on the
+ * specific bits set in these fields.
+ */
 union clause ast = FENCE : (bits(4), bits(4))
 
 $[format I]
@@ -706,6 +836,17 @@ mapping clause assembly = FENCE(pred, succ)
   <-> "fence" ^ spc() ^ fence_bits(pred) ^ sep() ^ fence_bits(succ)
 
 /* ****************************************************************** */
+
+$[name Total Store Order Fence Operation]
+/*!
+ * The FENCE_TSO instruction is a memory
+ * ordering instruction that provides a stronger memory consistency model
+ * compared to the standard FENCE instruction. It ensures that all memory
+ * operations preceding and following the FENCE_TSO instruction are globally
+ * ordered. The FENCE_TSO instruction includes two 4-bit fields, 'pred' and
+ * 'succ', which represent the memory ordering requirements before and after
+ * the FENCE_TSO instruction, respectively.
+ */
 union clause ast = FENCE_TSO : (bits(4), bits(4))
 
 $[format I]
@@ -744,6 +885,15 @@ mapping clause assembly = FENCE_TSO(pred, succ)
   <-> "fence.tso" ^ spc() ^ fence_bits(pred) ^ sep() ^ fence_bits(succ)
 
 /* ****************************************************************** */
+$[name Instruction Fence Operation]
+/*!
+ * The FENCEI instruction is a memory ordering instruction that 
+ * provides a barrier to the instruction stream.
+ * It ensures that all instructions preceding the FENCEI instruction are
+ * globally ordered. The FENCEI instruction has no 'pred' or 'succ' fields,
+ * and it is typically used to control instruction stream visibility.
+ * 
+ */
 union clause ast = FENCEI : unit
 
 mapping clause encdec = FENCEI()
@@ -755,6 +905,15 @@ function clause execute FENCEI() = { /* __barrier(Barrier_RISCV_i); */ RETIRE_SU
 mapping clause assembly = FENCEI() <-> "fence.i"
 
 /* ****************************************************************** */
+
+$[name Environment Call]
+/*!
+ * The ECALL instruction, previously called SCALL is used to make a 
+ * request to the supporting execution environment, typically an 
+ * operating system. The ABI for the system defines how parameters 
+ * for the environment request are passed, often in defined locations
+ *  in the integer register file.
+ */
 union clause ast = ECALL : unit
 
 mapping clause encdec = ECALL()
@@ -776,6 +935,13 @@ function clause execute ECALL() = {
 mapping clause assembly = ECALL() <-> "ecall"
 
 /* ****************************************************************** */
+
+$[name Machine-level Return]
+/*!
+ * The MRET instruction is used to return from a machine-level exception,
+ * transferring control back to the instruction following the one that
+ * caused the exception. It is only valid when executed in Machine mode.
+ */
 union clause ast = MRET : unit
 
 mapping clause encdec = MRET()
@@ -795,6 +961,13 @@ function clause execute MRET() = {
 mapping clause assembly = MRET() <-> "mret"
 
 /* ****************************************************************** */
+
+$[name Supervisor-level Return]
+/*!
+ * The SRET instruction is used to return from a supervisor-level exception,
+ * transferring control back to the instruction following the one that
+ * caused the exception. It is only valid when executed in Supervisor mode.
+ */
 union clause ast = SRET : unit
 
 mapping clause encdec = SRET()
@@ -819,6 +992,14 @@ function clause execute SRET() = {
 mapping clause assembly = SRET() <-> "sret"
 
 /* ****************************************************************** */
+
+$[name Environment Breakpoint]
+/*!
+ * The EBREAK instruction, previously called SBREAK is utilized by 
+ * debuggers to trigger a breakpoint exception, leading to a transfer
+ * of control back to a debugging environment.
+ * This instruction is commonly employed for debugging purposes.
+ */
 union clause ast = EBREAK : unit
 
 mapping clause encdec = EBREAK()
@@ -832,6 +1013,18 @@ function clause execute EBREAK() = {
 mapping clause assembly = EBREAK() <-> "ebreak"
 
 /* ****************************************************************** */
+
+$[name Wait For Interrupt]
+/*!
+ * The WFI (Wait For Interrupt) instruction is used to suspend the execution
+ * pipeline until an interrupt or an event occurs. Its behavior depends on the
+ * current privilege level:
+ * - In Machine mode, it invokes the platform-specific WFI handler.
+ * - In Supervisor mode, it checks the TW (Timer Wait) bit in mstatus. If the
+ *   bit is set, it handles the illegal instruction and returns with RETIRE_FAIL.
+ *   Otherwise, it invokes the platform-specific WFI handler.
+ * - In User mode, it handles the illegal instruction and returns with RETIRE_FAIL.
+ */
 union clause ast = WFI : unit
 
 mapping clause encdec = WFI()
@@ -849,6 +1042,18 @@ function clause execute WFI() =
 mapping clause assembly = WFI() <-> "wfi"
 
 /* ****************************************************************** */
+$[name Store Fence Virtual Memory Address (SFENCE.VMA)]
+/*!
+ * The SFENCE.VMA instruction is used to synchronize the store queue and flush
+ * TLB entries based on virtual memory address and optional ASID values.
+ * Its behavior depends on the current privilege level:
+ * - In User mode, it handles the illegal instruction and returns with RETIRE_FAIL.
+ * - In Supervisor mode, it checks for illegal instructions and performs TLB
+ *   flushing based on the provided virtual memory address and ASID values.
+ * - In Machine mode, it performs TLB flushing based on the provided virtual
+ *   memory address and ASID values.
+ */
+
 union clause ast = SFENCE_VMA : (regidx, regidx)
 
 $[format R]
