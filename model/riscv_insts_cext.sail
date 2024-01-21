@@ -78,7 +78,6 @@
 
 /* ****************************************************************** */
 
-include "riscv_insts_helper.sail"
 
 union clause ast = C_NOP : unit
 
