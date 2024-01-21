@@ -74,10 +74,6 @@
 /* ****************************************************************** */
 // Some print utils for lr/sc.
 
-
-include "riscv_insts_helper.sail"
-
-
 function aqrl_str(aq : bool, rl : bool) -> string =
   match (aq, rl) {
     (false, false) => "",
@@ -109,7 +105,7 @@ function amo_width_valid(size : word_width) -> bool = {
 /* ****************************************************************** */
 union clause ast = LOADRES : (bool, bool, regidx, word_width, regidx)
 
-mapping clause encdec = LOADRES(aq, rl, rs1, size, rd) if extension("A") & amo_width_valid(size) 
+mapping clause encdec = LOADRES(aq, rl, rs1, size, rd) if amo_width_valid(size)
   <-> 0b00010 @ bool_bits(aq) @ bool_bits(rl) @ 0b00000 @ rs1 @ 0b0 @ size_bits(size) @ rd @ 0b0101111 if amo_width_valid(size)
 
 
@@ -127,7 +123,7 @@ function process_loadres(rd, addr, value, is_unsigned) =
   }
 
 function clause execute(LOADRES(aq, rl, rs1, width, rd)) = {
-  if extension("A") then {
+  if haveAtomics() then {
     /* Get the address, X(rs1) (no offset).
      * Extensions might perform additional checks on address validity.
      */
@@ -168,14 +164,14 @@ function clause execute(LOADRES(aq, rl, rs1, width, rd)) = {
   }
 }
 
-mapping clause assembly = LOADRES(aq, rl, rs1, size, rd) if  extension("A") 
+mapping clause assembly = LOADRES(aq, rl, rs1, size, rd)
   <-> "lr." ^ size_mnemonic(size) ^ maybe_aq(aq) ^ maybe_rl(rl) ^ spc() ^ reg_name(rd) ^ sep() ^ reg_name(rs1)
 
 /* ****************************************************************** */
 union clause ast = STORECON : (bool, bool, regidx, regidx, word_width, regidx)
 
-mapping clause encdec = STORECON(aq, rl, rs2, rs1, size, rd) if extension("A") & amo_width_valid(size)
-  <-> 0b00011 @ bool_bits(aq) @ bool_bits(rl) @ rs2 @ rs1 @ 0b0 @ size_bits(size) @ rd @ 0b0101111 if  extension("A") & amo_width_valid(size) 
+mapping clause encdec = STORECON(aq, rl, rs2, rs1, size, rd) if amo_width_valid(size)
+  <-> 0b00011 @ bool_bits(aq) @ bool_bits(rl) @ rs2 @ rs1 @ 0b0 @ size_bits(size) @ rd @ 0b0101111 if amo_width_valid(size)
 
 /* NOTE: Currently, we only EA if address translation is successful. This may need revisiting. */
 function clause execute (STORECON(aq, rl, rs2, rs1, width, rd)) = {
@@ -185,7 +181,7 @@ function clause execute (STORECON(aq, rl, rs2, rs1, width, rd)) = {
      */
     X(rd) = zero_extend(0b1); RETIRE_SUCCESS
   } else {
-    if extension("A") then {
+    if haveAtomics() then {
       /* normal non-rmem case
        * rmem: SC is allowed to succeed (but might fail later)
        */
@@ -254,7 +250,7 @@ function clause execute (STORECON(aq, rl, rs2, rs1, width, rd)) = {
   }
 }
 
-mapping clause assembly = STORECON(aq, rl, rs2, rs1, size, rd) if  extension("A") &
+mapping clause assembly = STORECON(aq, rl, rs2, rs1, size, rd)
   <-> "sc." ^ size_mnemonic(size) ^ maybe_aq(aq) ^ maybe_rl(rl) ^ spc() ^ reg_name(rd) ^ sep() ^ reg_name(rs1) ^ sep() ^ reg_name(rs2)
 
 /* ****************************************************************** */
@@ -278,7 +274,7 @@ mapping clause encdec = AMO(op, aq, rl, rs2, rs1, size, rd) if amo_width_valid(s
 /* NOTE: Currently, we only EA if address translation is successful.
    This may need revisiting. */
 function clause execute (AMO(op, aq, rl, rs2, rs1, width, rd)) = {
-  if extension("A") then {
+  if haveAtomics() then {
     /* Get the address, X(rs1) (no offset).
      * Some extensions perform additional checks on address validity.
      */
@@ -379,5 +375,5 @@ mapping amo_mnemonic : amoop <-> string = {
   AMOMAXU <-> "amomaxu"
 }
 
-mapping clause assembly = AMO(op, aq, rl, rs2, rs1, width, rd) if extension("A")
+mapping clause assembly = AMO(op, aq, rl, rs2, rs1, width, rd)
   <-> amo_mnemonic(op) ^ "." ^ size_mnemonic(width) ^ maybe_aq(aq) ^ maybe_rl(rl) ^ spc() ^ reg_name(rd) ^ sep() ^ reg_name(rs2) ^ sep() ^ "(" ^ reg_name(rs1) ^ ")"
