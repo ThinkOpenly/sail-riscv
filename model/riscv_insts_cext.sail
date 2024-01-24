@@ -77,8 +77,6 @@
  */
 
 /* ****************************************************************** */
-
-
 union clause ast = C_NOP : unit
 
 mapping clause encdec_compressed = C_NOP() if extension("C")
@@ -523,8 +521,8 @@ mapping clause assembly = C_LDSP(uimm, rd)
 /* ****************************************************************** */
 union clause ast = C_SWSP : (bits(6), regidx)
 
-mapping clause encdec_compressed = C_SWSP(ui76 @ ui52, rs2) if extension("C") if extension("C")
-  <-> 0b110 @ ui52 : bits(4) @ ui76 : bits(2) @ rs2 : regidx @ 0b10 if extension("C") if extension("C")
+mapping clause encdec_compressed = C_SWSP(ui76 @ ui52, rs2) if extension("C") 
+  <-> 0b110 @ ui52 : bits(4) @ ui76 : bits(2) @ rs2 : regidx @ 0b10 if extension("C") 
 
 function clause execute (C_SWSP(uimm, rs2)) = {
   let imm : bits(12) = zero_extend(uimm @ 0b00);
