@@ -148,7 +148,7 @@ mapping clause assembly = DIV(rs2, rs1, rd, s)
 /* ****************************************************************** */
 union clause ast = REM : (regidx, regidx, regidx, bool)
 
-mapping clause encdec = REM(rs2, rs1, rd, s) & extension("M")
+mapping clause encdec = REM(rs2, rs1, rd, s) if extension("M")
   <-> 0b0000001 @ rs2 @ rs1 @ 0b11 @ bool_not_bits(s) @ rd @ 0b0110011
 
 function clause execute (REM(rs2, rs1, rd, s)) = {
@@ -173,10 +173,10 @@ mapping clause assembly = REM(rs2, rs1, rd, s)
 /* ****************************************************************** */
 union clause ast = MULW : (regidx, regidx, regidx)
 
-mapping clause encdec = MULW(rs2, rs1, rd) if extension("M")
-      if sizeof(xlen) == 64
+mapping clause encdec = MULW(rs2, rs1, rd)
+      if extension("M") & sizeof(xlen) == 64
   <-> 0b0000001 @ rs2 @ rs1 @ 0b000 @ rd @ 0b0111011
-      if sizeof(xlen) == 64
+      if extension("M") & sizeof(xlen) == 64
 
 function clause execute (MULW(rs2, rs1, rd)) = {
   if extension("M") | haveZmmul() then {
@@ -203,10 +203,10 @@ mapping clause assembly = MULW(rs2, rs1, rd)
 /* ****************************************************************** */
 union clause ast = DIVW : (regidx, regidx, regidx, bool)
 
-mapping clause encdec = DIVW(rs2, rs1, rd, s) if extension("M")
-      if sizeof(xlen) == 64
+mapping clause encdec = DIVW(rs2, rs1, rd, s)
+      if extension("M") & sizeof(xlen) == 64
   <-> 0b0000001 @ rs2 @ rs1 @ 0b10 @ bool_not_bits(s) @ rd @ 0b0111011
-      if sizeof(xlen) == 64
+      if extension("M") & sizeof(xlen) == 64
 
 function clause execute (DIVW(rs2, rs1, rd, s)) = {
   if extension("M") then {
@@ -233,10 +233,10 @@ mapping clause assembly = DIVW(rs2, rs1, rd, s)
 /* ****************************************************************** */
 union clause ast = REMW : (regidx, regidx, regidx, bool)
 
-mapping clause encdec = REMW(rs2, rs1, rd, s) if extension("M")
-      if sizeof(xlen) == 64
+mapping clause encdec = REMW(rs2, rs1, rd, s)
+      if extension("M") & sizeof(xlen) == 64
   <-> 0b0000001 @ rs2 @ rs1 @ 0b11 @ bool_not_bits(s) @ rd @ 0b0111011
-      if sizeof(xlen) == 64
+      if extension("M") & sizeof(xlen) == 64
 
 function clause execute (REMW(rs2, rs1, rd, s)) = {
   if extension("M") then {
