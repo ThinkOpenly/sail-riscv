@@ -928,15 +928,17 @@ val extension : (string) -> bool
 
 function extension(ext) = {
   match ext {
-    "A" => misa.A() == 0b1,
+    "A" => misa[A] == 0b1,
     "C" => misa.C() == 0b1,
     "D" => (misa.D() == 0b1) & (mstatus.FS() != 0b00),
     "F" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
-    "M" => misa.M() == 0b1,
+    "M" => misa[A] == 0b1,
     "N" => misa.N() == 0b1,
     "U" => misa.U() == 0b1,
     "S" => misa.S() == 0b1,
     "V" => (misa.V() == 0b1) & (mstatus.VS() != 0b00),
+    "Zaamo" => haveAtomics(),
+    "Zalrsc" => haveAtomics(),
     "Zba" => true,
     "Zbb" => true,
     "Zbc" => true,
