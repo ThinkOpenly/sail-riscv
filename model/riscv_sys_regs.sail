@@ -161,10 +161,6 @@ function haveZknd()   -> bool = true
 
 function haveZmmul()  -> bool = true
 
-/* A extension sub-extensions */
-function haveZaamo()  -> bool = haveAtomics()
-function haveZalrsc() -> bool = haveAtomics()
-
 /* Zicond extension support */
 function haveZicond() -> bool = true
 
@@ -955,6 +951,8 @@ function extension(ext) = {
     "U" => misa.U() == 0b1,
     "S" => misa.S() == 0b1,
     "V" => (misa.V() == 0b1) & (mstatus.VS() != 0b00),
+    "Zaamo" => haveAtomics(),
+    "Zalrsc" => haveAtomics(),
     "Zba" => true,
     "Zbb" => true,
     "Zbc" => true,
