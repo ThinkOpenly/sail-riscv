@@ -171,7 +171,7 @@ mapping clause assembly = RISCV_JALR(imm, rs1, rd)
 
 /* ****************************************************************** */
 
-$[name branch type]
+$[name Conditional Branch]
 /*!
  * The target address for this branch instruction is determined by combining
  * the sign-extended 13-bit immediate value with the contents of register rs1.
@@ -308,7 +308,7 @@ mapping clause assembly = ITYPE(imm, rs1, rd, op)
 
 /* ****************************************************************** */
 
-$[name shift immediate Operation]
+$[name Shift Immediate]
 /*!
  * The SHIFTIOP (Shift Immediate Operation) instruction format is used for
  * operations that involve shifting the bits of a register by an immediate
@@ -427,7 +427,7 @@ mapping clause assembly = RTYPE(rs2, rs1, rd, op)
 
 /* ****************************************************************** */
 
-$[name Load Operation]
+$[name Load]
 /*!
  * The LOAD instruction format is used for loading data from memory into a
  * register. The specific operation is determined by the word width (size),
@@ -515,7 +515,7 @@ mapping clause assembly = LOAD(imm, rs1, rd, is_unsigned, size, aq, rl)
 
 /* ****************************************************************** */
 
-$[name Store Operation]
+$[name Store]
 /*!
  * The STORE instruction format is used for storing data from a register into
  * memory. The specific operation is determined by the word width (size) and
@@ -668,7 +668,7 @@ mapping clause assembly = RTYPEW(rs2, rs1, rd, op)
       if sizeof(xlen) == 64
 
 /* ****************************************************************** */
-$[name Shift Immediate Word Operation]
+$[name Shift Immediate Word]
 /*!
  * The SHIFTIWOP instruction set deals with
  * immediate shift operations on 32-bit values, with the result sign-extended
@@ -717,7 +717,7 @@ mapping clause assembly = SHIFTIWOP(shamt, rs1, rd, op)
 
 /* ****************************************************************** */
 
-$[name FENCE Operation]
+$[name Fence (memory)]
 /*!
  * The FENCE instruction is used to provide memory ordering guarantees.
  * It specifies ordering constraints on memory operations that precede
@@ -837,7 +837,7 @@ mapping clause assembly = FENCE(pred, succ)
 
 /* ****************************************************************** */
 
-$[name Total Store Order Fence Operation]
+$[name fence (total store order)]
 /*!
  * The FENCE_TSO instruction is a memory
  * ordering instruction that provides a stronger memory consistency model
@@ -885,7 +885,7 @@ mapping clause assembly = FENCE_TSO(pred, succ)
   <-> "fence.tso" ^ spc() ^ fence_bits(pred) ^ sep() ^ fence_bits(succ)
 
 /* ****************************************************************** */
-$[name Instruction Fence Operation]
+$[name Fence (Instruction)]
 /*!
  * The FENCEI instruction is a memory ordering instruction that 
  * provides a barrier to the instruction stream.
@@ -1042,7 +1042,7 @@ function clause execute WFI() =
 mapping clause assembly = WFI() <-> "wfi"
 
 /* ****************************************************************** */
-$[name Store Fence Virtual Memory Address (SFENCE.VMA)]
+$[name Store Fence (Virtual Memory Address)]
 /*!
  * The SFENCE.VMA instruction is used to synchronize the store queue and flush
  * TLB entries based on virtual memory address and optional ASID values.
