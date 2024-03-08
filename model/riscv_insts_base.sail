@@ -834,7 +834,7 @@ mapping clause assembly = FENCE(pred, succ)
 
 /* ****************************************************************** */
 
-$[name fence (total store order)]
+$[name Fence (total store order)]
 /*!
  * The FENCE_TSO instruction is a memory
  * ordering instruction that provides a stronger memory consistency model
