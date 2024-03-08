@@ -249,7 +249,6 @@ mapping clause assembly = BTYPE(imm, rs2, rs1, op)
 
 /* ****************************************************************** */
 
-$[name immediate type instruction]
 /*!
  * The ITYPE instruction operates on an immediate value, adding, comparing, or
  * performing bitwise operations with the contents of register rs1.
@@ -362,7 +361,6 @@ mapping clause assembly = SHIFTIOP(shamt, rs1, rd, op)
 
 /* ****************************************************************** */
 
-$[name register type instruction]
 /*!
  * The R-type (Register-type) instruction format is used for operations
  * that involve three registers. The specific operation is determined
@@ -607,7 +605,6 @@ mapping clause assembly = ADDIW(imm, rs1, rd)
 
 /* ****************************************************************** */
 
-$[name Register-Type Word Operation]
 /*!
  * The RTYPEW instruction set operates on 32-bit values,
  * and the result is sign-extended to 64 bits. The available operations are
