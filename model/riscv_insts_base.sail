@@ -148,8 +148,7 @@ mapping clause assembly = RISCV_JAL(imm, rd)
   <-> "jal" ^ spc() ^ reg_name(rd) ^ sep() ^ hex_bits_21(imm)
 
 /* ****************************************************************** */
-
-$[name jump and link register]
+$[name Jump And Link Register]
 /*!
  * The target address is obtained by adding the sign-extended 12-bit
  * I-immediate to the register rs1, then setting the
@@ -170,7 +169,6 @@ mapping clause assembly = RISCV_JALR(imm, rs1, rd)
 /* see riscv_jalr_seq.sail or riscv_jalr_rmem.sail for the execute clause. */
 
 /* ****************************************************************** */
-
 $[name Conditional Branch]
 /*!
  * The target address for this branch instruction is determined by combining
@@ -306,7 +304,6 @@ mapping clause assembly = ITYPE(imm, rs1, rd, op)
   <-> itype_mnemonic(op) ^ spc() ^ reg_name(rd) ^ sep() ^ reg_name(rs1) ^ sep() ^ hex_bits_12(imm)
 
 /* ****************************************************************** */
-
 $[name Shift Immediate]
 /*!
  * The SHIFTIOP (Shift Immediate Operation) instruction format is used for
@@ -424,7 +421,6 @@ mapping clause assembly = RTYPE(rs2, rs1, rd, op)
   <-> rtype_mnemonic(op) ^ spc() ^ reg_name(rd) ^ sep() ^ reg_name(rs1) ^ sep() ^ reg_name(rs2)
 
 /* ****************************************************************** */
-
 $[name Load]
 /*!
  * The LOAD instruction format is used for loading data from memory into a
@@ -512,7 +508,6 @@ mapping clause assembly = LOAD(imm, rs1, rd, is_unsigned, size, aq, rl)
   <-> "l" ^ size_mnemonic(size) ^ maybe_u(is_unsigned) ^ maybe_aq(aq) ^ maybe_rl(rl) ^ spc() ^ reg_name(rd) ^ sep() ^ hex_bits_12(imm) ^ opt_spc() ^ "(" ^ opt_spc() ^ reg_name(rs1) ^ opt_spc() ^ ")"
 
 /* ****************************************************************** */
-
 $[name Store]
 /*!
  * The STORE instruction format is used for storing data from a register into
@@ -713,8 +708,7 @@ mapping clause assembly = SHIFTIWOP(shamt, rs1, rd, op)
       if sizeof(xlen) == 64
 
 /* ****************************************************************** */
-
-$[name Fence (memory)]
+$[name Fence (Memory)]
 /*!
  * The FENCE instruction is used to provide memory ordering guarantees.
  * It specifies ordering constraints on memory operations that precede
@@ -833,8 +827,7 @@ mapping clause assembly = FENCE(pred, succ)
   <-> "fence" ^ spc() ^ fence_bits(pred) ^ sep() ^ fence_bits(succ)
 
 /* ****************************************************************** */
-
-$[name Fence (total store order)]
+$[name Fence (Total Store Order)]
 /*!
  * The FENCE_TSO instruction is a memory
  * ordering instruction that provides a stronger memory consistency model
@@ -884,12 +877,11 @@ mapping clause assembly = FENCE_TSO(pred, succ)
 /* ****************************************************************** */
 $[name Fence (Instruction)]
 /*!
- * The FENCEI instruction is a memory ordering instruction that 
+ * The FENCEI instruction is a memory ordering instruction that
  * provides a barrier to the instruction stream.
  * It ensures that all instructions preceding the FENCEI instruction are
  * globally ordered. The FENCEI instruction has no 'pred' or 'succ' fields,
  * and it is typically used to control instruction stream visibility.
- * 
  */
 union clause ast = FENCEI : unit
 
@@ -902,14 +894,13 @@ function clause execute FENCEI() = { /* __barrier(Barrier_RISCV_i); */ RETIRE_SU
 mapping clause assembly = FENCEI() <-> "fence.i"
 
 /* ****************************************************************** */
-
 $[name Environment Call]
 /*!
- * The ECALL instruction, previously called SCALL is used to make a 
- * request to the supporting execution environment, typically an 
- * operating system. The ABI for the system defines how parameters 
+ * The ECALL instruction, previously called SCALL is used to make a
+ * request to the supporting execution environment, typically an
+ * operating system. The ABI for the system defines how parameters
  * for the environment request are passed, often in defined locations
- *  in the integer register file.
+ * in the integer register file.
  */
 union clause ast = ECALL : unit
 
@@ -932,7 +923,6 @@ function clause execute ECALL() = {
 mapping clause assembly = ECALL() <-> "ecall"
 
 /* ****************************************************************** */
-
 $[name Machine-level Return]
 /*!
  * The MRET instruction is used to return from a machine-level exception,
@@ -958,7 +948,6 @@ function clause execute MRET() = {
 mapping clause assembly = MRET() <-> "mret"
 
 /* ****************************************************************** */
-
 $[name Supervisor-level Return]
 /*!
  * The SRET instruction is used to return from a supervisor-level exception,
@@ -989,10 +978,9 @@ function clause execute SRET() = {
 mapping clause assembly = SRET() <-> "sret"
 
 /* ****************************************************************** */
-
 $[name Environment Breakpoint]
 /*!
- * The EBREAK instruction, previously called SBREAK is utilized by 
+ * The EBREAK instruction, previously called SBREAK is utilized by
  * debuggers to trigger a breakpoint exception, leading to a transfer
  * of control back to a debugging environment.
  * This instruction is commonly employed for debugging purposes.
@@ -1010,7 +998,6 @@ function clause execute EBREAK() = {
 mapping clause assembly = EBREAK() <-> "ebreak"
 
 /* ****************************************************************** */
-
 $[name Wait For Interrupt]
 /*!
  * The WFI (Wait For Interrupt) instruction is used to suspend the execution
