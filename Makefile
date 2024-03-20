@@ -200,7 +200,7 @@ all: ocaml_emulator/riscv_ocaml_sim_$(ARCH) c_emulator/riscv_sim_$(ARCH) riscv_i
 .PHONY: all
 
 json: $(SAIL_SRCS) model/main.sail Makefile
-	sail -json $(SAIL_FLAGS) $(SAIL_SRCS)
+	@sail -json $(SAIL_FLAGS) $(SAIL_SRCS)
 
 output: $(SAIL_SRCS) model/main.sail Makefile
 	sail -output-sail $(SAIL_FLAGS) $(SAIL_SRCS)
