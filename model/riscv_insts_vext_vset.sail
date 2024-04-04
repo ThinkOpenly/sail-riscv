@@ -122,7 +122,7 @@ function clause execute VSET_TYPE(op, ma, ta, sew, lmul, rs1, rd) = {
     vl = if AVL <= VLMAX then to_bits(sizeof(xlen), AVL)
          else if AVL < 2 * VLMAX then to_bits(sizeof(xlen), (AVL + 1) / 2)
          else to_bits(sizeof(xlen), VLMAX);
-    /* Note: ceil(AVL / 2) ≤ vl ≤ VLMAX when VLMAX < AVL < (2 * VLMAX)
+    /* Note: ceil(AVL / 2) <= vl <= VLMAX when VLMAX < AVL < (2 * VLMAX)
      * TODO: configuration support for either using ceil(AVL / 2) or VLMAX
      */
     X(rd) = vl;
@@ -195,7 +195,7 @@ function clause execute VSETI_TYPE(ma, ta, sew, lmul, uimm, rd) = {
   vl = if AVL <= VLMAX then to_bits(sizeof(xlen), AVL)
        else if AVL < 2 * VLMAX then to_bits(sizeof(xlen), (AVL + 1) / 2)
        else to_bits(sizeof(xlen), VLMAX);
-  /* Note: ceil(AVL / 2) ≤ vl ≤ VLMAX when VLMAX < AVL < (2 * VLMAX)
+  /* Note: ceil(AVL / 2) <= vl <= VLMAX when VLMAX < AVL < (2 * VLMAX)
    * TODO: configuration support for either using ceil(AVL / 2) or VLMAX
    */
   X(rd) = vl;
