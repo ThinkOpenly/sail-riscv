@@ -259,7 +259,7 @@ function fle_S   (v1,       v2,        is_quiet) = {
 /* **************************************************************** */
 /* Helper functions for 'encdec()'                                  */
 
-function haveSingleFPU() -> bool = extension("F") | haveZfinx()
+function haveSingleFPU() -> bool = extension("F") | extension("Zfinx")
 
 /* ****************************************************************** */
 /* Floating-point loads                                               */
