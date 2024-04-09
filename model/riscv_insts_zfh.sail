@@ -224,7 +224,7 @@ function fle_H   (v1,       v2,        is_quiet) = {
 /* **************************************************************** */
 /* Helper functions for 'encdec()'                                  */
 
-function haveHalfFPU() -> bool = extension("Zfh") | haveZhinx()
+function haveHalfFPU() -> bool = extension("Zfh") | extension("Zhinx")
 
 /* ****************************************************************** */
 /* Floating-point loads                                               */
