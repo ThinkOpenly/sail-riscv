@@ -286,13 +286,13 @@ function fle_D   (v1,       v2,        is_quiet) = {
 /* **************************************************************** */
 /* Helper functions for 'encdec()'                                  */
 
-function haveDoubleFPU() -> bool = extension("D") | haveZdinx()
+function haveDoubleFPU() -> bool = extension("D") | extension("Zdinx")
 
 /* RV32Zdinx requires even register pairs; can be omitted for code  */
 /* not used for RV32Zdinx (i.e. RV64-only or D-only).               */
 val validDoubleRegs : forall 'n, 'n > 0. (implicit('n), vector('n, dec, regidx)) -> bool
 function validDoubleRegs(n, regs) = {
-  if haveZdinx() & sizeof(xlen) == 32 then
+  if extension("Zdinx") & sizeof(xlen) == 32 then
     foreach (i from 0 to (n - 1))
       if (regs[i][0] == bitone) then return false;
   true
