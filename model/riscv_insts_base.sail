@@ -91,7 +91,7 @@ mapping clause assembly = RISCV_JAL(imm, rd)
   <-> "jal" ^ spc() ^ reg_name(rd) ^ sep() ^ hex_bits_signed_21(imm)
 
 /* ****************************************************************** */
-$[name Jump And Link Register]
+$[name jump and link register]
 /*!
  * The target address is obtained by adding the sign-extended 12-bit
  * I-immediate to the register rs1, then setting the
@@ -112,7 +112,7 @@ mapping clause assembly = RISCV_JALR(imm, rs1, rd)
 /* see riscv_jalr_seq.sail or riscv_jalr_rmem.sail for the execute clause. */
 
 /* ****************************************************************** */
-$[name Conditional Branch]
+$[name conditional branch]
 /*!
  * The target address for this branch instruction is determined by combining
  * the sign-extended 13-bit immediate value with the contents of register rs1.
@@ -235,12 +235,18 @@ function clause execute (ITYPE (imm, rs1, rd, op)) = {
 }
 
 mapping itype_mnemonic : iop <-> string = {
-  RISCV_ADDI  <-> "addi",
-  RISCV_SLTI  <-> "slti",
-  RISCV_SLTIU <-> "sltiu",
-  RISCV_XORI  <-> "xori",
-  RISCV_ORI   <-> "ori",
-  RISCV_ANDI  <-> "andi"
+  $[name add immediate]
+    RISCV_ADDI  <-> "addi",
+  $[name set less than immediate]
+    RISCV_SLTI  <-> "slti",
+  $[name set less than immediate unsigned]
+    RISCV_SLTIU <-> "sltiu",
+  $[name XOR immediate]
+    RISCV_XORI  <-> "xori",
+  $[name OR immediate]
+    RISCV_ORI   <-> "ori",
+  $[name AND immediate]
+    RISCV_ANDI  <-> "andi"
 }
 
 mapping clause assembly = ITYPE(imm, rs1, rd, op)
