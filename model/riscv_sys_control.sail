@@ -90,10 +90,10 @@ function is_CSR_defined (csr : csreg, p : Privilege) -> bool =
     0x303 => p == Machine & (haveSupMode() | haveNExt()), // mideleg
     0x304 => p == Machine, // mie
     0x305 => p == Machine, // mtvec
-    0x306 => p == Machine & haveUsrMode(), // mcounteren
-    0x30A => p == Machine & haveUsrMode(), // menvcfg
+    0x306 => p == Machine & extension("U"), // mcounteren
+    0x30A => p == Machine & extension("U"), // menvcfg
     0x310 => p == Machine & (sizeof(xlen) == 32), // mstatush
-    0x31A => p == Machine & haveUsrMode() & (sizeof(xlen) == 32), // menvcfgh
+    0x31A => p == Machine & extension("U") & (sizeof(xlen) == 32), // menvcfgh
     0x320 => p == Machine, // mcountinhibit
     /* machine mode: trap handling */
     0x340 => p == Machine, // mscratch
@@ -154,13 +154,13 @@ function is_CSR_defined (csr : csreg, p : Privilege) -> bool =
     0x180 => haveSupMode() & (p == Machine | p == Supervisor), // satp
 
     /* user mode: counters */
-    0xC00 => haveUsrMode(),    // cycle
-    0xC01 => haveUsrMode(),    // time
-    0xC02 => haveUsrMode(),    // instret
+    0xC00 => extension("U"),    // cycle
+    0xC01 => extension("U"),    // time
+    0xC02 => extension("U"),    // instret
 
-    0xC80 => haveUsrMode() & (sizeof(xlen) == 32),     // cycleh
-    0xC81 => haveUsrMode() & (sizeof(xlen) == 32),     // timeh
-    0xC82 => haveUsrMode() & (sizeof(xlen) == 32),     // instreth
+    0xC80 => extension("U") & (sizeof(xlen) == 32),     // cycleh
+    0xC81 => extension("U") & (sizeof(xlen) == 32),     // timeh
+    0xC82 => extension("U") & (sizeof(xlen) == 32),     // instreth
 
     /* user mode: Zkr */
     0x015 => haveZkr(),
@@ -247,7 +247,7 @@ function exception_delegatee(e : ExceptionType, p : Privilege) -> Privilege = {
   let user  = if   haveSupMode()
               then super & haveNExt() & bit_to_bool(sedeleg.bits()[idx])
               else super & haveNExt();
-  let deleg = if      haveUsrMode() & user  then User
+  let deleg = if      extension("U") & user  then User
               else if haveSupMode() & super then Supervisor
               else                               Machine;
   /* We cannot transition to a less-privileged mode. */
@@ -304,7 +304,7 @@ function processPending(xip : Minterrupts, xie : Minterrupts, xideleg : xlenbits
  * allows for example the M_Timer to be delegated to the U-mode.
  */
 function getPendingSet(priv : Privilege) -> option((xlenbits, Privilege)) = {
-  assert(haveUsrMode(), "no user mode: M/U or M/S/U system required");
+  assert(extension("U"), "no user mode: M/U or M/S/U system required");
   let effective_pending = mip.bits() & mie.bits();
   if  effective_pending == zero_extend(0b0) then None() /* fast path */
   else {
@@ -343,7 +343,7 @@ function dispatchInterrupt(priv : Privilege) -> option((InterruptType, Privilege
   /* If we don't have different privilege levels, we don't need to check delegation.
    * Absence of U-mode implies absence of S-mode.
    */
-  if not(haveUsrMode()) | (not(haveSupMode()) & not(haveNExt())) then {
+  if not(extension("U")) | (not(haveSupMode()) & not(haveNExt())) then {
     assert(priv == Machine, "invalid current privilege");
     let enabled_pending = mip.bits() & mie.bits();
     match findPendingInterrupt(enabled_pending) {
@@ -447,7 +447,7 @@ function trap_handler(del_priv : Privilege, intr : bool, c : exc_code, pc : xlen
        prepare_trap_vector(del_priv, scause)
     },
     User => {
-       assert(haveUsrMode(), "no user mode present for delegation");
+       assert(extension("U"), "no user mode present for delegation");
 
        ucause->IsInterrupt() = bool_to_bits(intr);
        ucause->Cause()       = zero_extend(c);
@@ -484,7 +484,7 @@ function exception_handler(cur_priv : Privilege, ctl : ctl_result,
       mstatus->MIE()  = mstatus.MPIE();
       mstatus->MPIE() = 0b1;
       cur_privilege   = privLevel_of_bits(mstatus.MPP());
-      mstatus->MPP()  = privLevel_to_bits(if haveUsrMode() then User else Machine);
+      mstatus->MPP()  = privLevel_to_bits(if extension("U") then User else Machine);
       if   cur_privilege != Machine
       then mstatus->MPRV() = 0b0;
 
