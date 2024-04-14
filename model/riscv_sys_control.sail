@@ -86,8 +86,8 @@ function is_CSR_defined (csr : csreg, p : Privilege) -> bool =
     /* machine mode: trap setup */
     0x300 => p == Machine, // mstatus
     0x301 => p == Machine, // misa
-    0x302 => p == Machine & (extension("S") | haveNExt()), // medeleg
-    0x303 => p == Machine & (extension("S") | haveNExt()), // mideleg
+    0x302 => p == Machine & (extension("S") | extension("N")), // medeleg
+    0x303 => p == Machine & (extension("S") | extension("N")), // mideleg
     0x304 => p == Machine, // mie
     0x305 => p == Machine, // mtvec
     0x306 => p == Machine & extension("U"), // mcounteren
@@ -136,8 +136,8 @@ function is_CSR_defined (csr : csreg, p : Privilege) -> bool =
 
     /* supervisor mode: trap setup */
     0x100 => extension("S") & (p == Machine | p == Supervisor), // sstatus
-    0x102 => extension("S") & haveNExt() & (p == Machine | p == Supervisor), // sedeleg
-    0x103 => extension("S") & haveNExt() & (p == Machine | p == Supervisor), // sideleg
+    0x102 => extension("S") & extension("N") & (p == Machine | p == Supervisor), // sedeleg
+    0x103 => extension("S") & extension("N") & (p == Machine | p == Supervisor), // sideleg
     0x104 => extension("S") & (p == Machine | p == Supervisor), // sie
     0x105 => extension("S") & (p == Machine | p == Supervisor), // stvec
     0x106 => extension("S") & (p == Machine | p == Supervisor), // scounteren
@@ -245,8 +245,8 @@ function exception_delegatee(e : ExceptionType, p : Privilege) -> Privilege = {
   let super = bit_to_bool(medeleg.bits()[idx]);
   /* if S-mode is absent, medeleg delegates to U-mode if 'N' is supported. */
   let user  = if   extension("S")
-              then super & haveNExt() & bit_to_bool(sedeleg.bits()[idx])
-              else super & haveNExt();
+              then super & extension("N") & bit_to_bool(sedeleg.bits()[idx])
+              else super & extension("N");
   let deleg = if      extension("U") & user  then User
               else if extension("S") & super then Supervisor
               else                               Machine;
@@ -314,7 +314,7 @@ function getPendingSet(priv : Privilege) -> option((xlenbits, Privilege)) = {
      */
     let mIE = priv != Machine | (priv == Machine & mstatus.MIE() == 0b1);
     let sIE = extension("S") & (priv == User | (priv == Supervisor & mstatus.SIE() == 0b1));
-    let uIE = haveNExt() & (priv == User & mstatus.UIE() == 0b1);
+    let uIE = extension("N") & (priv == User & mstatus.UIE() == 0b1);
     match processPending(mip, mie, mideleg.bits(), mIE) {
       Ints_Empty()      => None(),
       Ints_Pending(p)   => let r = (p, Machine) in Some(r),
@@ -343,7 +343,7 @@ function dispatchInterrupt(priv : Privilege) -> option((InterruptType, Privilege
   /* If we don't have different privilege levels, we don't need to check delegation.
    * Absence of U-mode implies absence of S-mode.
    */
-  if not(extension("U")) | (not(extension("S")) & not(haveNExt())) then {
+  if not(extension("U")) | (not(extension("S")) & not(extension("N"))) then {
     assert(priv == Machine, "invalid current privilege");
     let enabled_pending = mip.bits() & mie.bits();
     match findPendingInterrupt(enabled_pending) {
