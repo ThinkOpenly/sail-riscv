@@ -163,7 +163,7 @@ function is_CSR_defined (csr : csreg, p : Privilege) -> bool =
     0xC82 => extension("U") & (sizeof(xlen) == 32),     // instreth
 
     /* user mode: Zkr */
-    0x015 => haveZkr(),
+    0x015 => extension("Zkr"),
 
     /* check extensions */
     _     => ext_is_CSR_defined(csr, p)
