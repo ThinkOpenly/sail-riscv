@@ -176,45 +176,6 @@ function legalize_misa(m : Misa, v : xlenbits) -> Misa = {
   }
 }
 
-/* helpers to check support for various extensions. */
-/* we currently don't model 'E', so always assume 'I'. */
-function haveAtomics() -> bool = misa.A() == 0b1
-function haveRVC()     -> bool = misa.C() == 0b1
-function haveMulDiv()  -> bool = misa.M() == 0b1
-function haveSupMode() -> bool = misa.S() == 0b1
-function haveUsrMode() -> bool = misa.U() == 0b1
-function haveNExt()    -> bool = misa.N() == 0b1
-/* see below for F and D (and Z*inx counterparts) extension tests */
-
-/* BitManip extension support. */
-function haveZba()  -> bool = true
-function haveZbb()  -> bool = true
-function haveZbc()  -> bool = true
-function haveZbs()  -> bool = true
-
-/* Zfa (additional FP) extension */
-function haveZfa()  -> bool = true
-
-/* Scalar Cryptography extensions support. */
-function haveZbkb() -> bool = true
-function haveZbkc() -> bool = true
-function haveZbkx() -> bool = true
-
-/* Cryptography extension support. Note these will need updating once */
-/* Sail can be dynamically configured with different extension support */
-/* and have dynamic changes of XLEN via S/UXL */
-function haveZkr()    -> bool = true
-function haveZksh()   -> bool = true
-function haveZksed()  -> bool = true
-function haveZknh()   -> bool = true
-function haveZkne()   -> bool = true
-function haveZknd()   -> bool = true
-
-function haveZmmul()  -> bool = true
-
-/* Zicond extension support */
-function haveZicond() -> bool = true
-
 bitfield Mstatush : bits(32) = {
   MBE  : 5,
   SBE  : 4
