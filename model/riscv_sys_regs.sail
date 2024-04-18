@@ -257,10 +257,10 @@ function set_mstatus_UXL(m : Mstatus, a : arch_xlen) -> Mstatus = {
 
 val extension : (string) -> bool
 
+/* helper to check support for various extensions. */
+/* we currently don't model 'E', so always assume 'I'. */
 function extension(ext) = {
   match ext {
-    /* helpers to check support for various extensions. */
-    /* we currently don't model 'E', so always assume 'I'. */
     "A" => misa.A() == 0b1,
     "C" => misa.C() == 0b1,
 
