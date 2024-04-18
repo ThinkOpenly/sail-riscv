@@ -294,6 +294,43 @@ function set_mstatus_UXL(m : Mstatus, a : arch_xlen) -> Mstatus = {
   }
 }
 
+val extension : (string) -> bool
+
+function extension(ext) = {
+  match ext {
+    "A" => misa.A() == 0b1,
+    "C" => misa.C() == 0b1,
+    "D" => (misa.D() == 0b1) & (mstatus.FS() != 0b00),
+    "F" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
+    "M" => misa.M() == 0b1,
+    "N" => misa.N() == 0b1,
+    "U" => misa.U() == 0b1,
+    "S" => misa.S() == 0b1,
+    "V" => (misa.V() == 0b1) & (mstatus.VS() != 0b00),
+    "Zba" => true,
+    "Zbb" => true,
+    "Zbc" => true,
+    "Zbkb" => true,
+    "Zbkc" => true,
+    "Zbkx" => true,
+    "Zbs" => true,
+    "Zfa" => true,
+    "Zfh" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
+    "Zdinx" => sys_enable_zfinx() & sizeof(flen) >= 64,
+    "Zfinx" => sys_enable_zfinx(),
+    "Zhinx" => sys_enable_zfinx(),
+    "Zicond" => true,
+    "Zkr" => true,
+    "Zksh" => true,
+    "Zksed" => true,
+    "Zknd" => true,
+    "Zkne" => true,
+    "Zknh" => true,
+    "Zmmul" => true,
+    _ => false
+  }
+}
+
 function legalize_mstatus(o : Mstatus, v : xlenbits) -> Mstatus = {
   /*
    * Populate all defined fields using the bits of v, stripping anything
@@ -964,40 +1001,3 @@ function get_vtype_vma() = decode_agtype(vtype.vma())
 
 val get_vtype_vta : unit -> agtype effect {rreg}
 function get_vtype_vta() = decode_agtype(vtype.vta())
-
-val extension : (string) -> bool
-
-function extension(ext) = {
-  match ext {
-    "A" => misa.A() == 0b1,
-    "C" => misa.C() == 0b1,
-    "D" => (misa.D() == 0b1) & (mstatus.FS() != 0b00),
-    "F" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
-    "M" => misa.M() == 0b1,
-    "N" => misa.N() == 0b1,
-    "U" => misa.U() == 0b1,
-    "S" => misa.S() == 0b1,
-    "V" => (misa.V() == 0b1) & (mstatus.VS() != 0b00),
-    "Zba" => true,
-    "Zbb" => true,
-    "Zbc" => true,
-    "Zbkb" => true,
-    "Zbkc" => true,
-    "Zbkx" => true,
-    "Zbs" => true,
-    "Zfa" => true,
-    "Zfh" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
-    "Zdinx" => sys_enable_zfinx() & sizeof(flen) >= 64,
-    "Zfinx" => sys_enable_zfinx(),
-    "Zhinx" => sys_enable_zfinx(),
-    "Zicond" => true,
-    "Zkr" => true,
-    "Zksh" => true,
-    "Zksed" => true,
-    "Zknd" => true,
-    "Zkne" => true,
-    "Zknh" => true,
-    "Zmmul" => true,
-    _ => false
-  }
-}
