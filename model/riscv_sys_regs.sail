@@ -362,7 +362,7 @@ function legalize_mstatus(o : Mstatus, v : xlenbits) -> Mstatus = {
           } else m;
 
   /* Hardwired to zero in the absence of 'U' or 'N'. */
-  let m = if not(haveNExt()) then {
+  let m = if not(extension("N")) then {
              let m = update_UPIE(m, 0b0);
              let m = update_UIE(m, 0b0);
              m
@@ -432,7 +432,7 @@ function legalize_mip(o : Minterrupts, v : xlenbits) -> Minterrupts = {
   let m = update_SEI(o, v.SEI());
   let m = update_STI(m, v.STI());
   let m = update_SSI(m, v.SSI());
-  if extension("U") & haveNExt() then {
+  if extension("U") & extension("N") then {
     let m = update_UEI(m, v.UEI());
     let m = update_UTI(m, v.UTI());
     let m = update_USI(m, v.USI());
@@ -449,7 +449,7 @@ function legalize_mie(o : Minterrupts, v : xlenbits) -> Minterrupts = {
   let m = update_STI(m, v.STI());
   let m = update_SSI(m, v.SSI());
   /* The U-mode bits will be modified if we have the 'N' extension. */
-  if extension("U") & haveNExt() then {
+  if extension("U") & extension("N") then {
     let m = update_UEI(m, v.UEI());
     let m = update_UTI(m, v.UTI());
     let m = update_USI(m, v.USI());
@@ -753,7 +753,7 @@ function lower_mie(m : Minterrupts, d : Minterrupts) -> Sinterrupts = {
 function lift_sip(o : Minterrupts, d : Minterrupts, s : Sinterrupts) -> Minterrupts = {
   let m : Minterrupts = o;
   let m = if d.SSI() == 0b1 then update_SSI(m, s.SSI()) else m;
-  if haveNExt() then {
+  if extension("N") then {
     let m = if d.UEI() == 0b1 then update_UEI(m, s.UEI()) else m;
     let m = if d.USI() == 0b1 then update_USI(m, s.USI()) else m;
     m
@@ -770,7 +770,7 @@ function lift_sie(o : Minterrupts, d : Minterrupts, s : Sinterrupts) -> Minterru
   let m = if d.SEI() == 0b1 then update_SEI(m, s.SEI()) else m;
   let m = if d.STI() == 0b1 then update_STI(m, s.STI()) else m;
   let m = if d.SSI() == 0b1 then update_SSI(m, s.SSI()) else m;
-  if haveNExt() then {
+  if extension("N") then {
     let m = if d.UEI() == 0b1 then update_UEI(m, s.UEI()) else m;
     let m = if d.UTI() == 0b1 then update_UTI(m, s.UTI()) else m;
     let m = if d.USI() == 0b1 then update_USI(m, s.USI()) else m;
