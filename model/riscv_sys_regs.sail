@@ -368,7 +368,7 @@ function legalize_mstatus(o : Mstatus, v : xlenbits) -> Mstatus = {
              m
           } else m;
 
-  if not(haveUsrMode()) then {
+  if not(extension("U")) then {
     let m = update_MPRV(m, 0b0);
     m
   } else m
@@ -432,7 +432,7 @@ function legalize_mip(o : Minterrupts, v : xlenbits) -> Minterrupts = {
   let m = update_SEI(o, v.SEI());
   let m = update_STI(m, v.STI());
   let m = update_SSI(m, v.SSI());
-  if haveUsrMode() & haveNExt() then {
+  if extension("U") & haveNExt() then {
     let m = update_UEI(m, v.UEI());
     let m = update_UTI(m, v.UTI());
     let m = update_USI(m, v.USI());
@@ -449,7 +449,7 @@ function legalize_mie(o : Minterrupts, v : xlenbits) -> Minterrupts = {
   let m = update_STI(m, v.STI());
   let m = update_SSI(m, v.SSI());
   /* The U-mode bits will be modified if we have the 'N' extension. */
-  if haveUsrMode() & haveNExt() then {
+  if extension("U") & haveNExt() then {
     let m = update_UEI(m, v.UEI());
     let m = update_UTI(m, v.UTI());
     let m = update_USI(m, v.USI());
