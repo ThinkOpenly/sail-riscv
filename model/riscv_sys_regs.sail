@@ -354,19 +354,6 @@ function in32BitMode() -> bool = {
   cur_Architecture() == RV32
 }
 
-/* F and D extensions have to enabled both via misa.{FD} as well as mstatus.FS */
-function haveFExt()    -> bool = (misa.F() == 0b1) & (mstatus.FS() != 0b00)
-function haveDExt()    -> bool = (misa.D() == 0b1) & (mstatus.FS() != 0b00)
-/* Zfh (half-precision) extension depends on misa.F and mstatus.FS */
-function haveZfh()     -> bool = (misa.F() == 0b1) & (mstatus.FS() != 0b00)
-/* V extension has to enable both via misa.V as well as mstatus.VS */
-function haveVExt()    -> bool = (misa.V() == 0b1) & (mstatus.VS() != 0b00)
-
-/* Zhinx, Zfinx and Zdinx extensions (TODO: gate FCSR access on [mhs]stateen0 bit 1 when implemented) */
-function haveZhinx()   -> bool = sys_enable_zfinx()
-function haveZfinx()   -> bool = sys_enable_zfinx()
-function haveZdinx()   -> bool = sys_enable_zfinx() & sizeof(flen) >= 64
-
 /* interrupt processing state */
 
 bitfield Minterrupts : xlenbits = {
