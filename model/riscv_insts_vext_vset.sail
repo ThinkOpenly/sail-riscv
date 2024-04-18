@@ -167,8 +167,8 @@ mapping clause assembly = VSETVL(rs2, rs1, rd)
 /* ********************************** vsetivli *********************************** */
 union clause ast = VSETIVLI : ( bits(1), bits(1), bits(3), bits(3), regidx, regidx)
 
-mapping clause encdec = VSETIVLI(ma, ta, sew, lmul, uimm, rd) if haveVExt()
-  <-> 0b1100 @ ma @ ta @ sew @ lmul @ uimm @ 0b111 @ rd @ 0b1010111 if haveVExt()
+mapping clause encdec = VSETIVLI(ma, ta, sew, lmul, uimm, rd) if extension("V")
+  <-> 0b1100 @ ma @ ta @ sew @ lmul @ uimm @ 0b111 @ rd @ 0b1010111 if extension("V")
 
 function clause execute VSETIVLI(ma, ta, sew, lmul, uimm, rd) = {
   /* set vtype */
