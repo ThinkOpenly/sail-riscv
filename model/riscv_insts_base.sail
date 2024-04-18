@@ -783,7 +783,7 @@ $[name "fence (instruction)"]
 union clause ast = FENCEI : unit
 
 mapping clause encdec = FENCEI()
-  <-> 0b000000000000 @ 0b00000 @ 0b001 @ 0b00000 @ 0b0001111
+  <-> reserved_bits_12(ZERO) @ reserved_bits_5(ZERO) @ 0b001 @ reserved_bits_5(ZERO) @ 0b0001111
 
 /* fence.i is a nop for the memory model */
 function clause execute FENCEI() = { /* __barrier(Barrier_RISCV_i); */ RETIRE_SUCCESS }
