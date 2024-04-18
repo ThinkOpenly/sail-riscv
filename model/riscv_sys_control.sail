@@ -86,14 +86,14 @@ function is_CSR_defined (csr : csreg, p : Privilege) -> bool =
     /* machine mode: trap setup */
     0x300 => p == Machine, // mstatus
     0x301 => p == Machine, // misa
-    0x302 => p == Machine & (haveSupMode() | haveNExt()), // medeleg
-    0x303 => p == Machine & (haveSupMode() | haveNExt()), // mideleg
+    0x302 => p == Machine & (extension("S") | extension("N")), // medeleg
+    0x303 => p == Machine & (extension("S") | extension("N")), // mideleg
     0x304 => p == Machine, // mie
     0x305 => p == Machine, // mtvec
-    0x306 => p == Machine & haveUsrMode(), // mcounteren
-    0x30A => p == Machine & haveUsrMode(), // menvcfg
+    0x306 => p == Machine & extension("U"), // mcounteren
+    0x30A => p == Machine & extension("U"), // menvcfg
     0x310 => p == Machine & (sizeof(xlen) == 32), // mstatush
-    0x31A => p == Machine & haveUsrMode() & (sizeof(xlen) == 32), // menvcfgh
+    0x31A => p == Machine & extension("U") & (sizeof(xlen) == 32), // menvcfgh
     0x320 => p == Machine, // mcountinhibit
     /* machine mode: trap handling */
     0x340 => p == Machine, // mscratch
@@ -135,35 +135,35 @@ function is_CSR_defined (csr : csreg, p : Privilege) -> bool =
     0x7a0 => p == Machine,
 
     /* supervisor mode: trap setup */
-    0x100 => haveSupMode() & (p == Machine | p == Supervisor), // sstatus
-    0x102 => haveSupMode() & haveNExt() & (p == Machine | p == Supervisor), // sedeleg
-    0x103 => haveSupMode() & haveNExt() & (p == Machine | p == Supervisor), // sideleg
-    0x104 => haveSupMode() & (p == Machine | p == Supervisor), // sie
-    0x105 => haveSupMode() & (p == Machine | p == Supervisor), // stvec
-    0x106 => haveSupMode() & (p == Machine | p == Supervisor), // scounteren
-    0x10A => haveSupMode() & (p == Machine | p == Supervisor), // senvcfg
+    0x100 => extension("S") & (p == Machine | p == Supervisor), // sstatus
+    0x102 => extension("S") & extension("N") & (p == Machine | p == Supervisor), // sedeleg
+    0x103 => extension("S") & extension("N") & (p == Machine | p == Supervisor), // sideleg
+    0x104 => extension("S") & (p == Machine | p == Supervisor), // sie
+    0x105 => extension("S") & (p == Machine | p == Supervisor), // stvec
+    0x106 => extension("S") & (p == Machine | p == Supervisor), // scounteren
+    0x10A => extension("S") & (p == Machine | p == Supervisor), // senvcfg
 
     /* supervisor mode: trap handling */
-    0x140 => haveSupMode() & (p == Machine | p == Supervisor), // sscratch
-    0x141 => haveSupMode() & (p == Machine | p == Supervisor), // sepc
-    0x142 => haveSupMode() & (p == Machine | p == Supervisor), // scause
-    0x143 => haveSupMode() & (p == Machine | p == Supervisor), // stval
-    0x144 => haveSupMode() & (p == Machine | p == Supervisor), // sip
+    0x140 => extension("S") & (p == Machine | p == Supervisor), // sscratch
+    0x141 => extension("S") & (p == Machine | p == Supervisor), // sepc
+    0x142 => extension("S") & (p == Machine | p == Supervisor), // scause
+    0x143 => extension("S") & (p == Machine | p == Supervisor), // stval
+    0x144 => extension("S") & (p == Machine | p == Supervisor), // sip
 
     /* supervisor mode: address translation */
-    0x180 => haveSupMode() & (p == Machine | p == Supervisor), // satp
+    0x180 => extension("S") & (p == Machine | p == Supervisor), // satp
 
     /* user mode: counters */
-    0xC00 => haveUsrMode(),    // cycle
-    0xC01 => haveUsrMode(),    // time
-    0xC02 => haveUsrMode(),    // instret
+    0xC00 => extension("U"),    // cycle
+    0xC01 => extension("U"),    // time
+    0xC02 => extension("U"),    // instret
 
-    0xC80 => haveUsrMode() & (sizeof(xlen) == 32),     // cycleh
-    0xC81 => haveUsrMode() & (sizeof(xlen) == 32),     // timeh
-    0xC82 => haveUsrMode() & (sizeof(xlen) == 32),     // instreth
+    0xC80 => extension("U") & (sizeof(xlen) == 32),     // cycleh
+    0xC81 => extension("U") & (sizeof(xlen) == 32),     // timeh
+    0xC82 => extension("U") & (sizeof(xlen) == 32),     // instreth
 
     /* user mode: Zkr */
-    0x015 => haveZkr(),
+    0x015 => extension("Zkr"),
 
     /* check extensions */
     _     => ext_is_CSR_defined(csr, p)
@@ -183,9 +183,9 @@ function check_Counteren(csr : csreg, p : Privilege) -> bool =
     (0xC01, Supervisor) => mcounteren.TM() == 0b1,
     (0xC02, Supervisor) => mcounteren.IR() == 0b1,
 
-    (0xC00, User) => mcounteren.CY() == 0b1 & (not(haveSupMode()) | scounteren.CY() == 0b1),
-    (0xC01, User) => mcounteren.TM() == 0b1 & (not(haveSupMode()) | scounteren.TM() == 0b1),
-    (0xC02, User) => mcounteren.IR() == 0b1 & (not(haveSupMode()) | scounteren.IR() == 0b1),
+    (0xC00, User) => mcounteren.CY() == 0b1 & (not(extension("S")) | scounteren.CY() == 0b1),
+    (0xC01, User) => mcounteren.TM() == 0b1 & (not(extension("S")) | scounteren.TM() == 0b1),
+    (0xC02, User) => mcounteren.IR() == 0b1 & (not(extension("S")) | scounteren.IR() == 0b1),
 
     (_, _) => /* no HPM counters for now */
               if   0xC03 <=_u csr & csr <=_u 0xC1F
@@ -244,11 +244,11 @@ function exception_delegatee(e : ExceptionType, p : Privilege) -> Privilege = {
   let idx   = num_of_ExceptionType(e);
   let super = bit_to_bool(medeleg.bits()[idx]);
   /* if S-mode is absent, medeleg delegates to U-mode if 'N' is supported. */
-  let user  = if   haveSupMode()
-              then super & haveNExt() & bit_to_bool(sedeleg.bits()[idx])
-              else super & haveNExt();
-  let deleg = if      haveUsrMode() & user  then User
-              else if haveSupMode() & super then Supervisor
+  let user  = if   extension("S")
+              then super & extension("N") & bit_to_bool(sedeleg.bits()[idx])
+              else super & extension("N");
+  let deleg = if      extension("U") & user  then User
+              else if extension("S") & super then Supervisor
               else                               Machine;
   /* We cannot transition to a less-privileged mode. */
   if   privLevel_to_bits(deleg) <_u privLevel_to_bits(p)
@@ -304,7 +304,7 @@ function processPending(xip : Minterrupts, xie : Minterrupts, xideleg : xlenbits
  * allows for example the M_Timer to be delegated to the U-mode.
  */
 function getPendingSet(priv : Privilege) -> option((xlenbits, Privilege)) = {
-  assert(haveUsrMode(), "no user mode: M/U or M/S/U system required");
+  assert(extension("U"), "no user mode: M/U or M/S/U system required");
   let effective_pending = mip.bits() & mie.bits();
   if  effective_pending == zero_extend(0b0) then None() /* fast path */
   else {
@@ -313,13 +313,13 @@ function getPendingSet(priv : Privilege) -> option((xlenbits, Privilege)) = {
      * considered blocked.
      */
     let mIE = priv != Machine | (priv == Machine & mstatus.MIE() == 0b1);
-    let sIE = haveSupMode() & (priv == User | (priv == Supervisor & mstatus.SIE() == 0b1));
-    let uIE = haveNExt() & (priv == User & mstatus.UIE() == 0b1);
+    let sIE = extension("S") & (priv == User | (priv == Supervisor & mstatus.SIE() == 0b1));
+    let uIE = extension("N") & (priv == User & mstatus.UIE() == 0b1);
     match processPending(mip, mie, mideleg.bits(), mIE) {
       Ints_Empty()      => None(),
       Ints_Pending(p)   => let r = (p, Machine) in Some(r),
       Ints_Delegated(d) =>
-        if not(haveSupMode()) then {
+        if not(extension("S")) then {
           if uIE then let r = (d, User) in Some(r)
           else                             None()
         } else {
@@ -343,7 +343,7 @@ function dispatchInterrupt(priv : Privilege) -> option((InterruptType, Privilege
   /* If we don't have different privilege levels, we don't need to check delegation.
    * Absence of U-mode implies absence of S-mode.
    */
-  if not(haveUsrMode()) | (not(haveSupMode()) & not(haveNExt())) then {
+  if not(extension("U")) | (not(extension("S")) & not(extension("N"))) then {
     assert(priv == Machine, "invalid current privilege");
     let enabled_pending = mip.bits() & mie.bits();
     match findPendingInterrupt(enabled_pending) {
@@ -422,7 +422,7 @@ function trap_handler(del_priv : Privilege, intr : bool, c : exc_code, pc : xlen
        prepare_trap_vector(del_priv, mcause)
     },
     Supervisor => {
-       assert (haveSupMode(), "no supervisor mode present for delegation");
+       assert (extension("S"), "no supervisor mode present for delegation");
 
        scause->IsInterrupt() = bool_to_bits(intr);
        scause->Cause()       = zero_extend(c);
@@ -447,7 +447,7 @@ function trap_handler(del_priv : Privilege, intr : bool, c : exc_code, pc : xlen
        prepare_trap_vector(del_priv, scause)
     },
     User => {
-       assert(haveUsrMode(), "no user mode present for delegation");
+       assert(extension("U"), "no user mode present for delegation");
 
        ucause->IsInterrupt() = bool_to_bits(intr);
        ucause->Cause()       = zero_extend(c);
@@ -484,7 +484,7 @@ function exception_handler(cur_priv : Privilege, ctl : ctl_result,
       mstatus->MIE()  = mstatus.MPIE();
       mstatus->MPIE() = 0b1;
       cur_privilege   = privLevel_of_bits(mstatus.MPP());
-      mstatus->MPP()  = privLevel_to_bits(if haveUsrMode() then User else Machine);
+      mstatus->MPP()  = privLevel_to_bits(if extension("U") then User else Machine);
       if   cur_privilege != Machine
       then mstatus->MPRV() = 0b0;
 

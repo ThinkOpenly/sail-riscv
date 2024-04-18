@@ -87,7 +87,7 @@ mapping clause encdec = MUL(rs2, rs1, rd, high, signed1, signed2) if extension("
   <-> 0b0000001 @ rs2 @ rs1 @ encdec_mul_op(high, signed1, signed2) : bits(3) @ rd @ 0b0110011
 
 function clause execute (MUL(rs2, rs1, rd, high, signed1, signed2)) = {
-  if extension("M") | haveZmmul() then {
+  if extension("M") | extension("Zmmul") then {
     let rs1_val = X(rs1);
     let rs2_val = X(rs2);
     let rs1_int : int = if signed1 then signed(rs1_val) else unsigned(rs1_val);
@@ -179,7 +179,7 @@ mapping clause encdec = MULW(rs2, rs1, rd)
       if extension("M") & sizeof(xlen) == 64
 
 function clause execute (MULW(rs2, rs1, rd)) = {
-  if extension("M") | haveZmmul() then {
+  if extension("M") | extension("Zmmul") then {
     let rs1_val = X(rs1)[31..0];
     let rs2_val = X(rs2)[31..0];
     let rs1_int : int = signed(rs1_val);

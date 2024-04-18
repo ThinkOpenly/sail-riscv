@@ -176,45 +176,6 @@ function legalize_misa(m : Misa, v : xlenbits) -> Misa = {
   }
 }
 
-/* helpers to check support for various extensions. */
-/* we currently don't model 'E', so always assume 'I'. */
-function haveAtomics() -> bool = misa.A() == 0b1
-function haveRVC()     -> bool = misa.C() == 0b1
-function haveMulDiv()  -> bool = misa.M() == 0b1
-function haveSupMode() -> bool = misa.S() == 0b1
-function haveUsrMode() -> bool = misa.U() == 0b1
-function haveNExt()    -> bool = misa.N() == 0b1
-/* see below for F and D (and Z*inx counterparts) extension tests */
-
-/* BitManip extension support. */
-function haveZba()  -> bool = true
-function haveZbb()  -> bool = true
-function haveZbc()  -> bool = true
-function haveZbs()  -> bool = true
-
-/* Zfa (additional FP) extension */
-function haveZfa()  -> bool = true
-
-/* Scalar Cryptography extensions support. */
-function haveZbkb() -> bool = true
-function haveZbkc() -> bool = true
-function haveZbkx() -> bool = true
-
-/* Cryptography extension support. Note these will need updating once */
-/* Sail can be dynamically configured with different extension support */
-/* and have dynamic changes of XLEN via S/UXL */
-function haveZkr()    -> bool = true
-function haveZksh()   -> bool = true
-function haveZksed()  -> bool = true
-function haveZknh()   -> bool = true
-function haveZkne()   -> bool = true
-function haveZknd()   -> bool = true
-
-function haveZmmul()  -> bool = true
-
-/* Zicond extension support */
-function haveZicond() -> bool = true
-
 bitfield Mstatush : bits(32) = {
   MBE  : 5,
   SBE  : 4
@@ -294,6 +255,67 @@ function set_mstatus_UXL(m : Mstatus, a : arch_xlen) -> Mstatus = {
   }
 }
 
+val extension : (string) -> bool
+
+/* helper to check support for various extensions. */
+/* we currently don't model 'E', so always assume 'I'. */
+function extension(ext) = {
+  match ext {
+    "A" => misa.A() == 0b1,
+    "C" => misa.C() == 0b1,
+
+    /* F and D extensions have to enabled both via misa.{FD} as well as mstatus.FS */
+    "D" => (misa.D() == 0b1) & (mstatus.FS() != 0b00),
+    "F" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
+
+    "M" => misa.M() == 0b1,
+    "N" => misa.N() == 0b1,
+    "U" => misa.U() == 0b1,
+    "S" => misa.S() == 0b1,
+
+    /* V extension has to enable both via misa.V as well as mstatus.VS */
+    "V" => (misa.V() == 0b1) & (mstatus.VS() != 0b00),
+
+    /* BitManip extension support. */
+    "Zba" => true,
+    "Zbb" => true,
+    "Zbc" => true,
+    "Zbs" => true,
+
+    /* Scalar Cryptography extensions support. */
+    "Zbkb" => true,
+    "Zbkc" => true,
+    "Zbkx" => true,
+
+    /* Zfa (additional FP) extension */
+    "Zfa" => true,
+
+    /* Zfh (half-precision) extension depends on misa.F and mstatus.FS */
+    "Zfh" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
+
+    /* Zhinx, Zfinx and Zdinx extensions (TODO: gate FCSR access on [mhs]stateen0 bit 1 when implemented) */
+    "Zdinx" => sys_enable_zfinx() & sizeof(flen) >= 64,
+    "Zfinx" => sys_enable_zfinx(),
+    "Zhinx" => sys_enable_zfinx(),
+
+    /* Zicond extension support */
+    "Zicond" => true,
+
+    /* Cryptography extension support. Note these will need updating once */
+    /* Sail can be dynamically configured with different extension support */
+    /* and have dynamic changes of XLEN via S/UXL */
+    "Zkr" => true,
+    "Zksh" => true,
+    "Zksed" => true,
+    "Zknd" => true,
+    "Zkne" => true,
+    "Zknh" => true,
+
+    "Zmmul" => true,
+    _ => false
+  }
+}
+
 function legalize_mstatus(o : Mstatus, v : xlenbits) -> Mstatus = {
   /*
    * Populate all defined fields using the bits of v, stripping anything
@@ -325,13 +347,13 @@ function legalize_mstatus(o : Mstatus, v : xlenbits) -> Mstatus = {
           } else m;
 
   /* Hardwired to zero in the absence of 'U' or 'N'. */
-  let m = if not(haveNExt()) then {
+  let m = if not(extension("N")) then {
              let m = update_UPIE(m, 0b0);
              let m = update_UIE(m, 0b0);
              m
           } else m;
 
-  if not(haveUsrMode()) then {
+  if not(extension("U")) then {
     let m = update_MPRV(m, 0b0);
     m
   } else m
@@ -355,19 +377,6 @@ function cur_Architecture() -> Architecture = {
 function in32BitMode() -> bool = {
   cur_Architecture() == RV32
 }
-
-/* F and D extensions have to enabled both via misa.{FD} as well as mstatus.FS */
-function haveFExt()    -> bool = (misa.F() == 0b1) & (mstatus.FS() != 0b00)
-function haveDExt()    -> bool = (misa.D() == 0b1) & (mstatus.FS() != 0b00)
-/* Zfh (half-precision) extension depends on misa.F and mstatus.FS */
-function haveZfh()     -> bool = (misa.F() == 0b1) & (mstatus.FS() != 0b00)
-/* V extension has to enable both via misa.V as well as mstatus.VS */
-function haveVExt()    -> bool = (misa.V() == 0b1) & (mstatus.VS() != 0b00)
-
-/* Zhinx, Zfinx and Zdinx extensions (TODO: gate FCSR access on [mhs]stateen0 bit 1 when implemented) */
-function haveZhinx()   -> bool = sys_enable_zfinx()
-function haveZfinx()   -> bool = sys_enable_zfinx()
-function haveZdinx()   -> bool = sys_enable_zfinx() & sizeof(flen) >= 64
 
 /* interrupt processing state */
 
@@ -395,7 +404,7 @@ function legalize_mip(o : Minterrupts, v : xlenbits) -> Minterrupts = {
   let m = update_SEI(o, v.SEI());
   let m = update_STI(m, v.STI());
   let m = update_SSI(m, v.SSI());
-  if haveUsrMode() & haveNExt() then {
+  if extension("U") & extension("N") then {
     let m = update_UEI(m, v.UEI());
     let m = update_UTI(m, v.UTI());
     let m = update_USI(m, v.USI());
@@ -412,7 +421,7 @@ function legalize_mie(o : Minterrupts, v : xlenbits) -> Minterrupts = {
   let m = update_STI(m, v.STI());
   let m = update_SSI(m, v.SSI());
   /* The U-mode bits will be modified if we have the 'N' extension. */
-  if haveUsrMode() & haveNExt() then {
+  if extension("U") & extension("N") then {
     let m = update_UEI(m, v.UEI());
     let m = update_UTI(m, v.UTI());
     let m = update_USI(m, v.USI());
@@ -716,7 +725,7 @@ function lower_mie(m : Minterrupts, d : Minterrupts) -> Sinterrupts = {
 function lift_sip(o : Minterrupts, d : Minterrupts, s : Sinterrupts) -> Minterrupts = {
   let m : Minterrupts = o;
   let m = if d.SSI() == 0b1 then update_SSI(m, s.SSI()) else m;
-  if haveNExt() then {
+  if extension("N") then {
     let m = if d.UEI() == 0b1 then update_UEI(m, s.UEI()) else m;
     let m = if d.USI() == 0b1 then update_USI(m, s.USI()) else m;
     m
@@ -733,7 +742,7 @@ function lift_sie(o : Minterrupts, d : Minterrupts, s : Sinterrupts) -> Minterru
   let m = if d.SEI() == 0b1 then update_SEI(m, s.SEI()) else m;
   let m = if d.STI() == 0b1 then update_STI(m, s.STI()) else m;
   let m = if d.SSI() == 0b1 then update_SSI(m, s.SSI()) else m;
-  if haveNExt() then {
+  if extension("N") then {
     let m = if d.UEI() == 0b1 then update_UEI(m, s.UEI()) else m;
     let m = if d.UTI() == 0b1 then update_UTI(m, s.UTI()) else m;
     let m = if d.USI() == 0b1 then update_USI(m, s.USI()) else m;
@@ -964,40 +973,3 @@ function get_vtype_vma() = decode_agtype(vtype.vma())
 
 val get_vtype_vta : unit -> agtype effect {rreg}
 function get_vtype_vta() = decode_agtype(vtype.vta())
-
-val extension : (string) -> bool
-
-function extension(ext) = {
-  match ext {
-    "A" => misa.A() == 0b1,
-    "C" => misa.C() == 0b1,
-    "D" => (misa.D() == 0b1) & (mstatus.FS() != 0b00),
-    "F" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
-    "M" => misa.M() == 0b1,
-    "N" => misa.N() == 0b1,
-    "U" => misa.U() == 0b1,
-    "S" => misa.S() == 0b1,
-    "V" => (misa.V() == 0b1) & (mstatus.VS() != 0b00),
-    "Zba" => true,
-    "Zbb" => true,
-    "Zbc" => true,
-    "Zbkb" => true,
-    "Zbkc" => true,
-    "Zbkx" => true,
-    "Zbs" => true,
-    "Zfa" => true,
-    "Zfh" => (misa.F() == 0b1) & (mstatus.FS() != 0b00),
-    "Zdinx" => sys_enable_zfinx() & sizeof(flen) >= 64,
-    "Zfinx" => sys_enable_zfinx(),
-    "Zhinx" => sys_enable_zfinx(),
-    "Zicond" => true,
-    "Zkr" => true,
-    "Zksh" => true,
-    "Zksed" => true,
-    "Zknd" => true,
-    "Zkne" => true,
-    "Zknh" => true,
-    "Zmmul" => true,
-    _ => false
-  }
-}
