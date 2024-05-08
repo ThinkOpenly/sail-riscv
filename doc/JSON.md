@@ -5,7 +5,7 @@ After Installing the prerequisites
 
 1.  We first need to build the sail parser.
     1. Find a directory to clone this repository, and make that directory your current working directory.
-    2. `git clone -b json https://github.com/ThinkOpenly/sail`
+    2. `git clone https://github.com/ThinkOpenly/sail`
     3. `cd sail`
     4. `make`
 
