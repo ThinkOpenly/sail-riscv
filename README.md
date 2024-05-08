@@ -354,9 +354,9 @@ There is also (as yet unmerged) support for [integration with riscv-config](http
 For booting operating system images, see the information under the
 [os-boot/](os-boot/) subdirectory.
 
-### How to Build and Compile the project?
+### How to use the out-of-tree JSON backend to generate JSON from Sail
 
-To build and compile the project, visit [JSON.md](doc/JSON.md)
+For details, see [JSON.md](doc/JSON.md).
 
 ### Using development versions of Sail
 
