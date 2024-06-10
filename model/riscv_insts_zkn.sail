@@ -13,9 +13,13 @@
 enum clause extension = Ext_Zknh
 function clause extensionEnabled(Ext_Zknh) = true
 
+$[name SHA2-256 Sigma0]
 union clause ast = SHA256SIG0 : (regidx, regidx)
+$[name SHA2-256 Sigma1]
 union clause ast = SHA256SIG1 : (regidx, regidx)
+$[name SHA2-256 Sum0]
 union clause ast = SHA256SUM0 : (regidx, regidx)
+$[name SHA2-256 Sum1]
 union clause ast = SHA256SUM1 : (regidx, regidx)
 
 mapping clause encdec = SHA256SUM0 (rs1, rd) if extensionEnabled(Ext_Zknh)
