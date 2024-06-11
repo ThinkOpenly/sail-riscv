@@ -157,11 +157,17 @@ function clause execute (AES32DSI (bs, rs2, rs1, rd)) = {
  * ----------------------------------------------------------------------
  */
 
+$[name SHA2-512 Sigma0 low]
 union clause ast = SHA512SIG0L : (regidx, regidx, regidx)
+$[name SHA2-512 Sigma0 high]
 union clause ast = SHA512SIG0H : (regidx, regidx, regidx)
+$[name SHA2-512 Sigma1 low]
 union clause ast = SHA512SIG1L : (regidx, regidx, regidx)
+$[name SHA2-512 Sigma1 high]
 union clause ast = SHA512SIG1H : (regidx, regidx, regidx)
+$[name SHA2-512 Sum0 (RV32)]
 union clause ast = SHA512SUM0R : (regidx, regidx, regidx)
+$[name SHA2-512 Sum1 (RV32)]
 union clause ast = SHA512SUM1R : (regidx, regidx, regidx)
 
 mapping clause encdec = SHA512SUM0R (rs2, rs1, rd) if extension("Zknh") & sizeof(xlen) == 32
@@ -359,9 +365,13 @@ function clause execute (AES64DS(rs2, rs1, rd)) = {
  * ----------------------------------------------------------------------
  */
 
+$[name SHA2-512 Sigma0]
 union clause ast = SHA512SIG0 : (regidx, regidx)
+$[name SHA2-512 Sigma1]
 union clause ast = SHA512SIG1 : (regidx, regidx)
+$[name SHA2-512 Sum0 (RV64)]
 union clause ast = SHA512SUM0 : (regidx, regidx)
+$[name SHA2-512 Sum1 (RV64)]
 union clause ast = SHA512SUM1 : (regidx, regidx)
 
 mapping clause encdec = SHA512SUM0 (rs1, rd) if extension("Zknh") & sizeof(xlen) == 64
