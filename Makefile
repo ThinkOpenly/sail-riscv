@@ -206,6 +206,10 @@ all: ocaml_emulator/riscv_ocaml_sim_$(ARCH) c_emulator/riscv_sim_$(ARCH)
 json: $(SAIL_SRCS) model/main.sail Makefile
 	@sail -json $(SAIL_FLAGS) $(SAIL_SRCS)
 
+.PHONY: check-json
+check-json:
+	sail -json $(SAIL_FLAGS) $(SAIL_SRCS) | python3 -c "import json; import sys; j=json.load(sys.stdin)"
+
 output: $(SAIL_SRCS) model/main.sail Makefile
 	sail -output-sail $(SAIL_FLAGS) $(SAIL_SRCS)
 
