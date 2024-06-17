@@ -13,13 +13,13 @@
 enum clause extension = Ext_Zknh
 function clause extensionEnabled(Ext_Zknh) = true
 
-$[name SHA2-256 Sigma0]
+$[name "SHA2-256 Sigma0"]
 union clause ast = SHA256SIG0 : (regidx, regidx)
-$[name SHA2-256 Sigma1]
+$[name "SHA2-256 Sigma1"]
 union clause ast = SHA256SIG1 : (regidx, regidx)
-$[name SHA2-256 Sum0]
+$[name "SHA2-256 Sum0"]
 union clause ast = SHA256SUM0 : (regidx, regidx)
-$[name SHA2-256 Sum1]
+$[name "SHA2-256 Sum1"]
 union clause ast = SHA256SUM1 : (regidx, regidx)
 
 mapping clause encdec = SHA256SUM0 (rs1, rd) if extensionEnabled(Ext_Zknh)
@@ -165,17 +165,17 @@ function clause execute (AES32DSI (bs, rs2, rs1, rd)) = {
  * ----------------------------------------------------------------------
  */
 
-$[name SHA2-512 Sigma0 low]
+$[name "SHA2-512 Sigma0 low"]
 union clause ast = SHA512SIG0L : (regidx, regidx, regidx)
-$[name SHA2-512 Sigma0 high]
+$[name "SHA2-512 Sigma0 high"]
 union clause ast = SHA512SIG0H : (regidx, regidx, regidx)
-$[name SHA2-512 Sigma1 low]
+$[name "SHA2-512 Sigma1 low"]
 union clause ast = SHA512SIG1L : (regidx, regidx, regidx)
-$[name SHA2-512 Sigma1 high]
+$[name "SHA2-512 Sigma1 high"]
 union clause ast = SHA512SIG1H : (regidx, regidx, regidx)
-$[name SHA2-512 Sum0 (RV32)]
+$[name "SHA2-512 Sum0 (RV32)"]
 union clause ast = SHA512SUM0R : (regidx, regidx, regidx)
-$[name SHA2-512 Sum1 (RV32)]
+$[name "SHA2-512 Sum1 (RV32)"]
 union clause ast = SHA512SUM1R : (regidx, regidx, regidx)
 
 mapping clause encdec = SHA512SUM0R (rs2, rs1, rd) if extensionEnabled(Ext_Zknh) & sizeof(xlen) == 32
@@ -373,13 +373,13 @@ function clause execute (AES64DS(rs2, rs1, rd)) = {
  * ----------------------------------------------------------------------
  */
 
-$[name SHA2-512 Sigma0]
+$[name "SHA2-512 Sigma0"]
 union clause ast = SHA512SIG0 : (regidx, regidx)
-$[name SHA2-512 Sigma1]
+$[name "SHA2-512 Sigma1"]
 union clause ast = SHA512SIG1 : (regidx, regidx)
-$[name SHA2-512 Sum0 (RV64)]
+$[name "SHA2-512 Sum0 (RV64)"]
 union clause ast = SHA512SUM0 : (regidx, regidx)
-$[name SHA2-512 Sum1 (RV64)]
+$[name "SHA2-512 Sum1 (RV64)"]
 union clause ast = SHA512SUM1 : (regidx, regidx)
 
 mapping clause encdec = SHA512SUM0 (rs1, rd) if extensionEnabled(Ext_Zknh) & sizeof(xlen) == 64
