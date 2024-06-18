@@ -227,8 +227,8 @@ function extension(ext) = {
     /* V extension has to enable both via misa.V as well as mstatus.VS */
     "V" => (misa[V] == 0b1) & (mstatus[VS] != 0b00),
 
-    "Zaamo" => haveAtomics(),
-    "Zalrsc" => haveAtomics(),
+    "Zaamo" => extension("A"),
+    "Zalrsc" => extension("A"),
 
     /* BitManip extension support. */
     "Zba" => true,
@@ -927,3 +927,6 @@ function decode_agtype(ag) = {
 
 val get_vtype_vma : unit -> agtype
 function get_vtype_vma() = decode_agtype(vtype[vma])
+
+val get_vtype_vta : unit -> agtype
+function get_vtype_vta() = decode_agtype(vtype[vta])

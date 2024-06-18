@@ -170,7 +170,7 @@ function exception_delegatee(e : ExceptionType, p : Privilege) -> Privilege = {
   /* if S-mode is absent, medeleg delegates to U-mode if 'N' is supported. */
   let user  = if   extension("S")
               then super & extension("N") & bit_to_bool(sedeleg.bits[idx])
-              else super & extension("N")
+              else super & extension("N");
   let deleg = if      extension("U") & user  then User
               else if extension("S") & super then Supervisor
               else                               Machine;
