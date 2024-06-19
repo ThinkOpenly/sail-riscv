@@ -57,7 +57,7 @@ function handle_illegal_vtype() = {
 
 val calculate_new_vl : (int, int) -> xlenbits
 function calculate_new_vl(AVL, VLMAX) = {
-  /* Note: ceil(AVL / 2) ≤ vl ≤ VLMAX when VLMAX < AVL < (2 * VLMAX)
+  /* Note: ceil(AVL / 2) <= vl <= VLMAX when VLMAX < AVL < (2 * VLMAX)
    * TODO: configuration support for either using ceil(AVL / 2) or VLMAX
    */
   if AVL <= VLMAX then to_bits(sizeof(xlen), AVL)
