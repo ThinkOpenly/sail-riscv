@@ -1,0 +1,22 @@
+name: Unicode check
+on:
+    pull_request:
+        branches:
+            - JSON
+    push:
+        branches:
+            - JSON
+
+jobs:
+    check-unicode:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+            
+            - name: Check for unicode in Sail files
+              run: |
+                if git diff --exit-code --name-only ${{ github.base_ref }}..${{ github.head_ref }} | grep -E '\.sail$' | xargs grep -Pl "[^\x00-\x7F]" --null --files-with-matches; then
+                    echo "Error: Found unicode characters in Sail code."
+                    exit 1
+                fi
