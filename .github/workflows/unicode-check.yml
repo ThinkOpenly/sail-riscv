@@ -20,3 +20,4 @@ jobs:
                     echo "Error: Found unicode characters in Sail code."
                     exit 1
                 fi
+                
