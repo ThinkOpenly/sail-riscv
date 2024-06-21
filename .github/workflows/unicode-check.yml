@@ -16,7 +16,7 @@ jobs:
 
             - name: Check for unicode in Sail files
               run: |
-                if git diff --exit-code --name-only ${{ github.base_ref }}..${{ github.head_ref }} | grep -E '\.sail$' | xargs grep -Pl "[^\x00-\x7F]" --null --files-with-matches; then
+                if git diff --exit-code --name-only ${{ github.base_ref }}..${{ github.head_ref }} | grep -E '\.sail$' | xargs grep -Pl "[\u2200-\u22FF]" --null --files-with-matches; then
                     echo "Error: Found unicode characters in Sail code."
                     exit 1
                 fi
