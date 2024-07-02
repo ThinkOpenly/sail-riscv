@@ -77,6 +77,7 @@ function clause execute (SHA256SUM1(rs1, rd)) = {
  * ----------------------------------------------------------------------
  */
 
+$[name "AES middle round encrypt (RV32)"]
 union clause ast = AES32ESMI : (bits(2), regidx, regidx, regidx)
 
 mapping clause encdec = AES32ESMI (bs, rs2, rs1, rd) if extension("Zkne") & sizeof(xlen) == 32
@@ -95,6 +96,7 @@ function clause execute (AES32ESMI (bs, rs2, rs1, rd)) = {
   RETIRE_SUCCESS
 }
 
+$[name "AES final round encrypt (RV32)"]
 union clause ast = AES32ESI : (bits(2), regidx, regidx, regidx)
 
 mapping clause encdec = AES32ESI (bs, rs2, rs1, rd) if extension("Zkne") & sizeof(xlen) == 32
@@ -117,6 +119,7 @@ function clause execute (AES32ESI (bs, rs2, rs1, rd)) = {
  * ----------------------------------------------------------------------
  */
 
+$[name "AES middle round decrypt (RV32)"]
 union clause ast = AES32DSMI : (bits(2), regidx, regidx, regidx)
 
 mapping clause encdec = AES32DSMI (bs, rs2, rs1, rd) if extension("Zknd") & sizeof(xlen) == 32
@@ -135,6 +138,7 @@ function clause execute (AES32DSMI (bs, rs2, rs1, rd)) = {
   RETIRE_SUCCESS
 }
 
+$[name "AES final round decrypt (RV32)"]
 union clause ast = AES32DSI  : (bits(2), regidx, regidx, regidx)
 
 mapping clause encdec = AES32DSI (bs, rs2, rs1, rd) if extension("Zknd") & sizeof(xlen) == 32
@@ -247,12 +251,19 @@ function clause execute (SHA512SUM1R(rs2, rs1, rd)) = {
  * ----------------------------------------------------------------------
  */
 
+$[name "AES Key Schedule Instruction 1 (RV64)"]
 union clause ast = AES64KS1I : (bits(4), regidx, regidx)
+$[name "AES Key Schedule Instruction 2 (RV64)"]
 union clause ast = AES64KS2  : (regidx, regidx, regidx)
+$[name "AES Decrypt KeySchedule MixColumns (RV64)"]
 union clause ast = AES64IM   : (regidx, regidx)
+$[name "AES encrypt middle round instruction (RV64)"]
 union clause ast = AES64ESM  : (regidx, regidx, regidx)
+$[name "AES encrypt final round instruction (RV64)"]
 union clause ast = AES64ES   : (regidx, regidx, regidx)
+$[name "AES decrypt middle round (RV64)"]
 union clause ast = AES64DSM  : (regidx, regidx, regidx)
+$[name "AES decrypt final round (RV64)"]
 union clause ast = AES64DS   : (regidx, regidx, regidx)
 
 mapping clause encdec = AES64KS1I (rnum, rs1, rd) if (extension("Zkne") | extension("Zknd")) & (sizeof(xlen) == 64) & (rnum <_u 0xB)
