@@ -518,6 +518,23 @@ mapping clause assembly = VXTYPE(funct6, vm, vs2, rs1, vd)
   <-> vxtype_mnemonic(funct6) ^ spc() ^ vreg_name(vd) ^ sep() ^ vreg_name(vs2) ^ sep() ^ reg_name(rs1) ^ maybe_vmask(vm)
 
 /* ************************** OPIVX (WXTYPE Narrowing) *************************** */
+/* ***************************************************** */
+union clause ast = VNEG : (regidx, regidx)
+
+mapping clause encdec = VNEG(vs, vd) if extension("V")
+  <-> encdec(VXTYPE(VX_VRSUB, 0b0, vs, reg_name("x0"), vd)) if extension("V")
+
+mapping clause assembly = VNEG(vs, vd)
+  <-> "vneg.v" ^ spc() ^ vreg_name(vd) ^ sep() ^ vreg_name(vs)
+
+function clause execute(VNEG(vs, vd)) = execute(VXTYPE(VX_VRSUB, 0b0, vs, reg_name("x0"), vd))
+
+val pseudo_of : ast <-> string
+scattered mapping pseudo_of
+mapping clause pseudo_of = VNEG(vs, vd)
+  <-> "vrsub.vx" ^ spc() ^ vreg_name(vd) ^ sep() ^ vreg_name(vs) ^ sep() ^"x0"
+
+/* ***************************************************** */
 /* ************** Vector Narrowing Integer Right Shift Instructions ************** */
 union clause ast = NXSTYPE : (nxsfunct6, bits(1), regidx, regidx, regidx)
 
