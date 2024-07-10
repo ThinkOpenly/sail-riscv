@@ -7,6 +7,7 @@
 /*=======================================================================================*/
 
 /* ****************************************************************** */
+$[name "Rotate right Word (Immediate)"]
 union clause ast = RISCV_RORIW : (bits(5), regidx, regidx)
 
 mapping clause encdec = RISCV_RORIW(shamt, rs1, rd) if (extension("Zbb") | extension("Zbkb")) & sizeof(xlen) == 64
@@ -23,6 +24,7 @@ function clause execute (RISCV_RORIW(shamt, rs1, rd)) = {
 }
 
 /* ****************************************************************** */
+$[name "Rotate right (Immediate)"]
 union clause ast = RISCV_RORI : (bits(6), regidx, regidx)
 
 mapping clause encdec = RISCV_RORI(shamt, rs1, rd) if (extension("Zbb") | extension("Zbkb")) & (sizeof(xlen) == 64 | shamt[5] == bitzero)
@@ -50,7 +52,9 @@ mapping clause encdec = ZBB_RTYPEW(rs2, rs1, rd, RISCV_RORW) if (extension("Zbb"
   <-> 0b0110000 @ rs2 @ rs1 @ 0b101 @ rd @ 0b0111011 if (extension("Zbb") | extension("Zbkb")) & sizeof(xlen) == 64
 
 mapping zbb_rtypew_mnemonic : bropw_zbb <-> string = {
+  $[name "Rotate Left Word (Register)"]
   RISCV_ROLW <-> "rolw",
+  $[name "Rotate right Word (Register)"]
   RISCV_RORW <-> "rorw"
 }
 
@@ -99,14 +103,23 @@ mapping clause encdec = ZBB_RTYPE(rs2, rs1, rd, RISCV_ROR) if extension("Zbb") |
   <-> 0b0110000 @ rs2 @ rs1 @ 0b101 @ rd @ 0b0110011 if extension("Zbb") | extension("Zbkb")
 
 mapping zbb_rtype_mnemonic : brop_zbb <-> string = {
+  $[name "AND with inverted operand"]
   RISCV_ANDN <-> "andn",
+  $[name "OR with inverted operand"]
   RISCV_ORN  <-> "orn",
+  $[name "Exclusive NOR"]
   RISCV_XNOR <-> "xnor",
+  $[name "Maximum"]
   RISCV_MAX  <-> "max",
+  $[name "Unsigned maximum"]
   RISCV_MAXU <-> "maxu",
+  $[name "Minimum"]
   RISCV_MIN  <-> "min",
+  $[name "Unsigned minimum"]
   RISCV_MINU <-> "minu",
+  $[name "Rotate left (Register)"]
   RISCV_ROL  <-> "rol",
+  $[name "Rotate right (Register)"]
   RISCV_ROR  <-> "ror"
 }
 
@@ -151,8 +164,11 @@ mapping clause encdec = ZBB_EXTOP(rs1, rd, RISCV_ZEXTH) if extension("Zbb") & si
   <-> 0b0000100 @ 0b00000 @ rs1 @ 0b100 @ rd @ 0b0111011 if extension("Zbb") & sizeof(xlen) == 64
 
 mapping zbb_extop_mnemonic : extop_zbb <-> string = {
+  $[name "Sign-extend byte"]
   RISCV_SEXTB <-> "sext.b",
+  $[name "Sign-extend halfword"]
   RISCV_SEXTH <-> "sext.h",
+  $[name "Zero-extend halfword"]
   RISCV_ZEXTH <-> "zext.h"
 }
 
@@ -171,6 +187,7 @@ function clause execute (ZBB_EXTOP(rs1, rd, op)) = {
 }
 
 /* ****************************************************************** */
+$[name "Byte-reverse register"]
 union clause ast = RISCV_REV8 : (regidx, regidx)
 
 mapping clause encdec = RISCV_REV8(rs1, rd) if (extension("Zbb") | extension("Zbkb")) & sizeof(xlen) == 32
@@ -192,6 +209,7 @@ function clause execute (RISCV_REV8(rs1, rd)) = {
 }
 
 /* ****************************************************************** */
+$[name "Bitwise OR-Combine, byte granule"]
 union clause ast = RISCV_ORCB : (regidx, regidx)
 
 mapping clause encdec = RISCV_ORCB(rs1, rd) if extension("Zbb")
@@ -212,6 +230,7 @@ function clause execute (RISCV_ORCB(rs1, rd)) = {
 }
 
 /* ****************************************************************** */
+$[name "Count set bits"]
 union clause ast = RISCV_CPOP : (regidx, regidx)
 
 mapping clause encdec = RISCV_CPOP(rs1, rd) if extension("Zbb")
@@ -230,6 +249,7 @@ function clause execute (RISCV_CPOP(rs1, rd)) = {
 }
 
 /* ****************************************************************** */
+$[name "Count set bits in word"]
 union clause ast = RISCV_CPOPW : (regidx, regidx)
 
 mapping clause encdec = RISCV_CPOPW(rs1, rd) if extension("Zbb") & sizeof(xlen) == 64
@@ -248,6 +268,7 @@ function clause execute (RISCV_CPOPW(rs1, rd)) = {
 }
 
 /* ****************************************************************** */
+$[name "Count leading zero bits"]
 union clause ast = RISCV_CLZ : (regidx, regidx)
 
 mapping clause encdec = RISCV_CLZ(rs1, rd) if extension("Zbb")
@@ -269,6 +290,7 @@ function clause execute (RISCV_CLZ(rs1, rd)) = {
 }
 
 /* ****************************************************************** */
+$[name "Count leading zero bits in word"]
 union clause ast = RISCV_CLZW : (regidx, regidx)
 
 mapping clause encdec = RISCV_CLZW(rs1, rd) if extension("Zbb") & sizeof(xlen) == 64
@@ -290,6 +312,7 @@ function clause execute (RISCV_CLZW(rs1, rd)) = {
 }
 
 /* ****************************************************************** */
+$[name "Count trailing zero bits"]
 union clause ast = RISCV_CTZ : (regidx, regidx)
 
 mapping clause encdec = RISCV_CTZ(rs1, rd) if extension("Zbb")
@@ -311,6 +334,7 @@ function clause execute (RISCV_CTZ(rs1, rd)) = {
 }
 
 /* ****************************************************************** */
+$[name "Count trailing zero bits in word"]
 union clause ast = RISCV_CTZW : (regidx, regidx)
 
 mapping clause encdec = RISCV_CTZW(rs1, rd) if extension("Zbb") & sizeof(xlen) == 64

@@ -81,7 +81,7 @@ mapping zba_rtype_mnemonic : brop_zba <-> string = {
   RISCV_SH1ADD <-> "sh1add",
   $[name "Shift left by 2 and add"]
   RISCV_SH2ADD <-> "sh2add",
-   $[name "Shift left by 3 and add"]
+  $[name "Shift left by 3 and add"]
   RISCV_SH3ADD <-> "sh3add"
 }
 
