@@ -32,7 +32,9 @@ function clause execute UTYPE(imm, rd, op) = {
 }
 
 mapping utype_mnemonic : uop <-> string = {
+  $[name "load upper immediate"]
   RISCV_LUI   <-> "lui",
+  $[name "add upper immediate to PC"]
   RISCV_AUIPC <-> "auipc"
 }
 
@@ -40,6 +42,7 @@ mapping clause assembly = UTYPE(imm, rd, op)
   <-> utype_mnemonic(op) ^ spc() ^ reg_name(rd) ^ sep() ^ hex_bits_signed_20(imm)
 
 /* ****************************************************************** */
+$[name "jump and link"]
 union clause ast = RISCV_JAL : (bits(21), regidx)
 
 mapping clause encdec = RISCV_JAL(imm_19 @ imm_7_0 @ imm_8 @ imm_18_13 @ imm_12_9 @ 0b0, rd)
@@ -248,7 +251,7 @@ mapping clause assembly = ITYPE(imm, rs1, rd, op)
   <-> itype_mnemonic(op) ^ spc() ^ reg_name(rd) ^ sep() ^ reg_name(rs1) ^ sep() ^ hex_bits_signed_12(imm)
 
 /* ****************************************************************** */
-$[name "Shift Immediate"]
+$[name "shift immediate"]
 /*!
  * The SHIFTIOP (Shift Immediate Operation) instruction format is used for
  * operations that involve shifting the bits of a register by an immediate
@@ -349,15 +352,25 @@ function clause execute (RTYPE(rs2, rs1, rd, op)) = {
 }
 
 mapping rtype_mnemonic : rop <-> string = {
+  $[name "add"]
   RISCV_ADD  <-> "add",
+  $[name "set less than"]
   RISCV_SLT  <-> "slt",
+  $[name "set less than (unsigned)"]
   RISCV_SLTU <-> "sltu",
+  $[name "AND"]
   RISCV_AND  <-> "and",
+  $[name "OR"]
   RISCV_OR   <-> "or",
+  $[name "exclusive OR"]
   RISCV_XOR  <-> "xor",
+  $[name "shift left (logical)"]
   RISCV_SLL  <-> "sll",
+  $[name "shift right (logical)"]
   RISCV_SRL  <-> "srl",
+  $[name "subtract"]
   RISCV_SUB  <-> "sub",
+  $[name "shift right (arithmetic)"]
   RISCV_SRA  <-> "sra"
 }
 
@@ -365,7 +378,7 @@ mapping clause assembly = RTYPE(rs2, rs1, rd, op)
   <-> rtype_mnemonic(op) ^ spc() ^ reg_name(rd) ^ sep() ^ reg_name(rs1) ^ sep() ^ reg_name(rs2)
 
 /* ****************************************************************** */
-$[name "Load"]
+$[name "load"]
 /*!
  * The LOAD instruction format is used for loading data from memory into a
  * register. The specific operation is determined by the word width (size),
@@ -445,7 +458,7 @@ mapping clause assembly = LOAD(imm, rs1, rd, is_unsigned, size, aq, rl)
   <-> "l" ^ size_mnemonic(size) ^ maybe_u(is_unsigned) ^ maybe_aq(aq) ^ maybe_rl(rl) ^ spc() ^ reg_name(rd) ^ sep() ^ hex_bits_signed_12(imm) ^ "(" ^ reg_name(rs1) ^ ")"
 
 /* ****************************************************************** */
-$[name "Store"]
+$[name "store"]
 /*!
  * The STORE instruction format is used for storing data from a register into
  * memory. The specific operation is determined by the word width (size) and
@@ -498,7 +511,7 @@ mapping clause assembly = STORE(imm, rs2, rs1, size, aq, rl)
   <-> "s" ^ size_mnemonic(size) ^ maybe_aq(aq) ^ maybe_rl(rl) ^ spc() ^ reg_name(rs2) ^ sep() ^ hex_bits_signed_12(imm) ^ opt_spc() ^ "(" ^ opt_spc() ^ reg_name(rs1) ^ opt_spc() ^ ")"
 
 /* ****************************************************************** */
-$[name "Add Immediate Word"]
+$[name "add immediate word"]
 /*!
  * The ADDIW instruction involves adding a sign-extended
  * 12-bit immediate value to the content of register rs1. The result is a 32-bit
@@ -576,10 +589,15 @@ function clause execute (RTYPEW(rs2, rs1, rd, op)) = {
 }
 
 mapping rtypew_mnemonic : ropw <-> string = {
+  $[name "add word (RV64)"]
   RISCV_ADDW <-> "addw",
+  $[name "subtract word (RV64)"]
   RISCV_SUBW <-> "subw",
+  $[name "shift left (logical) word (RV64)"]
   RISCV_SLLW <-> "sllw",
+  $[name "shift right (logical) word (RV64)"]
   RISCV_SRLW <-> "srlw",
+  $[name "shift right (arithmetic) word (RV64)"]
   RISCV_SRAW <-> "sraw"
 }
 
@@ -589,7 +607,7 @@ mapping clause assembly = RTYPEW(rs2, rs1, rd, op)
       if sizeof(xlen) == 64
 
 /* ****************************************************************** */
-$[name "Shift Immediate Word"]
+$[name "shift immediate word"]
 /*!
  * The SHIFTIWOP instruction set deals with
  * immediate shift operations on 32-bit values, with the result sign-extended
@@ -637,7 +655,7 @@ mapping clause assembly = SHIFTIWOP(shamt, rs1, rd, op)
       if sizeof(xlen) == 64
 
 /* ****************************************************************** */
-$[name "Fence (Memory)"]
+$[name "fence (memory)"]
 /*!
  * The FENCE instruction is used to provide memory ordering guarantees.
  * It specifies ordering constraints on memory operations that precede
@@ -723,7 +741,7 @@ mapping clause assembly = FENCE(pred, succ)
   <-> "fence" ^ spc() ^ fence_bits(pred) ^ sep() ^ fence_bits(succ)
 
 /* ****************************************************************** */
-$[name "Fence (Total Store Order)"]
+$[name "fence (total store order)"]
 /*!
  * The FENCE_TSO instruction is a memory
  * ordering instruction that provides a stronger memory consistency model
@@ -754,7 +772,7 @@ mapping clause assembly = FENCE_TSO(pred, succ)
   <-> "fence.tso" ^ spc() ^ fence_bits(pred) ^ sep() ^ fence_bits(succ)
 
 /* ****************************************************************** */
-$[name "Fence (Instruction)"]
+$[name "fence (instruction)"]
 /*!
  * The FENCEI instruction is a memory ordering instruction that
  * provides a barrier to the instruction stream.
@@ -773,7 +791,7 @@ function clause execute FENCEI() = { /* __barrier(Barrier_RISCV_i); */ RETIRE_SU
 mapping clause assembly = FENCEI() <-> "fence.i"
 
 /* ****************************************************************** */
-$[name "Environment Call"]
+$[name "environment call"]
 /*!
  * The ECALL instruction, previously called SCALL is used to make a
  * request to the supporting execution environment, typically an
@@ -802,7 +820,7 @@ function clause execute ECALL() = {
 mapping clause assembly = ECALL() <-> "ecall"
 
 /* ****************************************************************** */
-$[name "Machine-level Return"]
+$[name "machine-level return"]
 /*!
  * The MRET instruction is used to return from a machine-level exception,
  * transferring control back to the instruction following the one that
@@ -827,7 +845,7 @@ function clause execute MRET() = {
 mapping clause assembly = MRET() <-> "mret"
 
 /* ****************************************************************** */
-$[name "Supervisor-level Return"]
+$[name "supervisor-level return"]
 /*!
  * The SRET instruction is used to return from a supervisor-level exception,
  * transferring control back to the instruction following the one that
@@ -857,7 +875,7 @@ function clause execute SRET() = {
 mapping clause assembly = SRET() <-> "sret"
 
 /* ****************************************************************** */
-$[name "Environment Breakpoint"]
+$[name "environment breakpoint"]
 /*!
  * The EBREAK instruction, previously called SBREAK is utilized by
  * debuggers to trigger a breakpoint exception, leading to a transfer
@@ -877,7 +895,7 @@ function clause execute EBREAK() = {
 mapping clause assembly = EBREAK() <-> "ebreak"
 
 /* ****************************************************************** */
-$[name "Wait For Interrupt"]
+$[name "wait for interrupt"]
 /*!
  * The WFI (Wait For Interrupt) instruction is used to suspend the execution
  * pipeline until an interrupt or an event occurs. Its behavior depends on the
@@ -905,7 +923,7 @@ function clause execute WFI() =
 mapping clause assembly = WFI() <-> "wfi"
 
 /* ****************************************************************** */
-$[name "Store Fence (Virtual Memory Address)"]
+$[name "store fence (virtual memory address)"]
 /*!
  * The SFENCE.VMA instruction is used to synchronize the store queue and flush
  * TLB entries based on virtual memory address and optional ASID values.
