@@ -14,6 +14,7 @@
  */
 
 /* ****************************************************************** */
+$[name "load double-precision floating point from stack pointer (compressed)"]
 union clause ast = C_FLDSP : (bits(6), regidx)
 
 mapping clause encdec_compressed = C_FLDSP(ui86 @ ui5 @ ui43, rd)
@@ -32,6 +33,7 @@ mapping clause assembly = C_FLDSP(uimm, rd)
       if (sizeof(xlen) == 32 | sizeof(xlen) == 64)
 
 /* ****************************************************************** */
+$[name "store double-precision floating point to stack pointer (compressed)"]
 union clause ast = C_FSDSP : (bits(6), regidx)
 
 mapping clause encdec_compressed = C_FSDSP(ui86 @ ui53, rs2)
@@ -50,6 +52,7 @@ mapping clause assembly = C_FSDSP(uimm, rs2)
       if (sizeof(xlen) == 32 | sizeof(xlen) == 64)
 
 /* ****************************************************************** */
+$[name "load double-precision floating point (compressed)"]
 union clause ast = C_FLD : (bits(5), cregidx, cregidx)
 
 mapping clause encdec_compressed = C_FLD(ui76 @ ui53, rs1, rd)
@@ -70,6 +73,7 @@ mapping clause assembly = C_FLD(uimm, rsc, rdc)
       if (sizeof(xlen) == 32 | sizeof(xlen) == 64)
 
 /* ****************************************************************** */
+$[name "store double-precision floating point (compressed)"]
 union clause ast = C_FSD : (bits(5), cregidx, cregidx)
 
 mapping clause encdec_compressed = C_FSD(ui76 @ ui53, rs1, rs2)
