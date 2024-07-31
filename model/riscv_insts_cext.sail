@@ -158,8 +158,11 @@ mapping clause encdec_compressed = C_ADDIW(imm5 @ imm40, rsd)
   <-> 0b001 @ imm5 : bits(1) @ rsd : regidx @ imm40 : bits(5) @ 0b01
       if rsd != zreg & sizeof(xlen) == 64 & extension("C")
 
-function clause execute (C_ADDIW(imm, rsd)) =
-  execute(ADDIW(sign_extend(imm), rsd, rsd))
+function clause execute (C_ADDIW(imm, rsd)) = {
+  let result : xlenbits = sign_extend(imm) + X(rsd);
+  X(rsd) = sign_extend(result[31..0]);
+  RETIRE_SUCCESS
+}
 
 mapping clause assembly = C_ADDIW(imm, rsd)
       if sizeof(xlen) == 64
