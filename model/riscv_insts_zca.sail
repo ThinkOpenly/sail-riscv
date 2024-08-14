@@ -14,6 +14,7 @@
  */
 
 /* ****************************************************************** */
+$[name "no-operation (compressed)"]
 union clause ast = C_NOP : unit
 
 mapping clause encdec_compressed = C_NOP() if extensionEnabled(Ext_Zca)
@@ -24,7 +25,7 @@ function clause execute C_NOP() = RETIRE_SUCCESS
 mapping clause assembly = C_NOP() <-> "c.nop"
 
 /* ****************************************************************** */
-
+$[name "add zero-extend non-zero immediate scaled by 4 to stack pointer (compressed)"]
 union clause ast = C_ADDI4SPN : (cregidx, bits(8))
 
 mapping clause encdec_compressed = C_ADDI4SPN(rd, nz96 @ nz54 @ nz3 @ nz2)
@@ -44,6 +45,7 @@ mapping clause assembly = C_ADDI4SPN(rdc, nzimm)
       if nzimm != 0b00000000
 
 /* ****************************************************************** */
+$[name "load word (compressed)"]
 union clause ast = C_LW : (bits(5), cregidx, cregidx)
 
 mapping clause encdec_compressed = C_LW(ui6 @ ui53 @ ui2, rs1, rd) if extensionEnabled(Ext_Zca)
@@ -60,6 +62,7 @@ mapping clause assembly = C_LW(uimm, rsc, rdc)
   <-> "c.lw" ^ spc() ^ creg_name(rdc) ^ sep() ^ creg_name(rsc) ^ sep() ^ hex_bits_7(uimm @ 0b00)
 
 /* ****************************************************************** */
+$[name "load double-word (compressed)"]
 union clause ast = C_LD : (bits(5), cregidx, cregidx)
 
 mapping clause encdec_compressed = C_LD(ui76 @ ui53, rs1, rd)
@@ -80,6 +83,7 @@ mapping clause assembly = C_LD(uimm, rsc, rdc)
       if sizeof(xlen) == 64
 
 /* ****************************************************************** */
+$[name "store word (compressed)"]
 union clause ast = C_SW : (bits(5), cregidx, cregidx)
 
 mapping clause encdec_compressed = C_SW(ui6 @ ui53 @ ui2, rs1, rs2) if extensionEnabled(Ext_Zca)
@@ -96,6 +100,7 @@ mapping clause assembly = C_SW(uimm, rsc1, rsc2)
   <-> "c.sw" ^ spc() ^ creg_name(rsc1) ^ sep() ^ creg_name(rsc2) ^ sep() ^ hex_bits_7(uimm @ 0b00)
 
 /* ****************************************************************** */
+$[name "store double-word (compressed)"]
 union clause ast = C_SD : (bits(5), cregidx, cregidx)
 
 mapping clause encdec_compressed = C_SD(ui76 @ ui53, rs1, rs2)
@@ -116,6 +121,7 @@ mapping clause assembly = C_SD(uimm, rsc1, rsc2)
       if sizeof(xlen) == 64
 
 /* ****************************************************************** */
+$[name "add immediate (compressed)"]
 union clause ast = C_ADDI : (bits(6), regidx)
 
 mapping clause encdec_compressed = C_ADDI(nzi5 @ nzi40, rsd)
@@ -134,6 +140,7 @@ mapping clause assembly = C_ADDI(nzi, rsd)
       if nzi != 0b000000 & rsd != zreg
 
 /* ****************************************************************** */
+$[name "jump and link (compressed)"]
 union clause ast = C_JAL : (bits(11))
 
 mapping clause encdec_compressed = C_JAL(i11 @ i10 @ i98 @ i7 @ i6 @ i5 @ i4 @ i31)
@@ -150,6 +157,7 @@ mapping clause assembly = C_JAL(imm)
       if sizeof(xlen) == 32
 
 /* ****************************************************************** */
+$[name "add immediate word (compressed) (RV64)"]
 union clause ast = C_ADDIW : (bits(6), regidx)
 
 mapping clause encdec_compressed = C_ADDIW(imm5 @ imm40, rsd)
@@ -166,6 +174,7 @@ mapping clause assembly = C_ADDIW(imm, rsd)
       if sizeof(xlen) == 64
 
 /* ****************************************************************** */
+$[name "load immediate (compressed)"]
 union clause ast = C_LI : (bits(6), regidx)
 
 mapping clause encdec_compressed = C_LI(imm5 @ imm40, rd)
@@ -184,6 +193,7 @@ mapping clause assembly = C_LI(imm, rd)
       if rd != zreg
 
 /* ****************************************************************** */
+$[name "add non-zero sign-extended immediate scaled by 16 to stack pointer (compressed)"]
 union clause ast = C_ADDI16SP : (bits(6))
 
 mapping clause encdec_compressed = C_ADDI16SP(nzi9 @ nzi87 @ nzi6 @ nzi5 @ nzi4)
@@ -202,6 +212,7 @@ mapping clause assembly = C_ADDI16SP(imm)
       if imm != 0b000000
 
 /* ****************************************************************** */
+$[name "load upper immediate (compressed)"]
 union clause ast = C_LUI : (bits(6), regidx)
 
 mapping clause encdec_compressed = C_LUI(imm17 @ imm1612, rd)
@@ -220,6 +231,7 @@ mapping clause assembly = C_LUI(imm, rd)
       if rd != zreg & rd != sp & imm != 0b000000
 
 /* ****************************************************************** */
+$[name "shift right (logical) immediate (compressed)"]
 union clause ast = C_SRLI : (bits(6), cregidx)
 
 mapping clause encdec_compressed = C_SRLI(nzui5 @ nzui40, rsd)
@@ -238,6 +250,7 @@ mapping clause assembly = C_SRLI(shamt, rsd)
       if shamt != 0b000000
 
 /* ****************************************************************** */
+$[name "shift right (arithmetic) immediate (compressed)"]
 union clause ast = C_SRAI : (bits(6), cregidx)
 
 mapping clause encdec_compressed = C_SRAI(nzui5 @ nzui40, rsd)
@@ -256,6 +269,7 @@ mapping clause assembly = C_SRAI(shamt, rsd)
       if shamt != 0b000000
 
 /* ****************************************************************** */
+$[name "AND immediate (compressed)"]
 union clause ast = C_ANDI : (bits(6), cregidx)
 
 mapping clause encdec_compressed = C_ANDI(i5 @ i40, rsd) if extensionEnabled(Ext_Zca)
@@ -270,6 +284,7 @@ mapping clause assembly = C_ANDI(imm, rsd)
   <-> "c.andi" ^ spc() ^ creg_name(rsd) ^ sep() ^ hex_bits_signed_6(imm)
 
 /* ****************************************************************** */
+$[name "subtract (compressed)"]
 union clause ast = C_SUB : (cregidx, cregidx)
 
 mapping clause encdec_compressed = C_SUB(rsd, rs2) if extensionEnabled(Ext_Zca)
@@ -285,6 +300,7 @@ mapping clause assembly = C_SUB(rsd, rs2)
   <-> "c.sub" ^ spc() ^ creg_name(rsd) ^ sep() ^ creg_name(rs2)
 
 /* ****************************************************************** */
+$[name "exclusive OR (compressed)"]
 union clause ast = C_XOR : (cregidx, cregidx)
 
 mapping clause encdec_compressed = C_XOR(rsd, rs2) if extensionEnabled(Ext_Zca)
@@ -300,6 +316,7 @@ mapping clause assembly = C_XOR(rsd, rs2)
   <-> "c.xor" ^ spc() ^ creg_name(rsd) ^ sep() ^ creg_name(rs2)
 
 /* ****************************************************************** */
+$[name "OR (compressed)"]
 union clause ast = C_OR : (cregidx, cregidx)
 
 mapping clause encdec_compressed = C_OR(rsd, rs2) if extensionEnabled(Ext_Zca)
@@ -315,6 +332,7 @@ mapping clause assembly = C_OR(rsd, rs2)
   <-> "c.or" ^ spc() ^ creg_name(rsd) ^ sep() ^ creg_name(rs2)
 
 /* ****************************************************************** */
+$[name "AND (compressed)"]
 union clause ast = C_AND : (cregidx, cregidx)
 
 mapping clause encdec_compressed = C_AND(rsd, rs2) if extensionEnabled(Ext_Zca)
@@ -330,6 +348,7 @@ mapping clause assembly = C_AND(rsd, rs2)
   <-> "c.and" ^ spc() ^ creg_name(rsd) ^ sep() ^ creg_name(rs2)
 
 /* ****************************************************************** */
+$[name "subtract word (compressed) (RV64)"]
 union clause ast = C_SUBW : (cregidx, cregidx)
 
 mapping clause encdec_compressed = C_SUBW(rsd, rs2)
@@ -349,6 +368,7 @@ mapping clause assembly = C_SUBW(rsd, rs2)
       if sizeof(xlen) == 64
 
 /* ****************************************************************** */
+$[name "add word (compressed) (RV64)"]
 union clause ast = C_ADDW : (cregidx, cregidx)
 
 mapping clause encdec_compressed = C_ADDW(rsd, rs2)
@@ -368,6 +388,7 @@ mapping clause assembly = C_ADDW(rsd, rs2)
       if sizeof(xlen) == 64
 
 /* ****************************************************************** */
+$[name "jump (compressed)"]
 union clause ast = C_J : (bits(11))
 
 mapping clause encdec_compressed = C_J(i11 @ i10 @ i98 @ i7 @ i6 @ i5 @ i4 @ i31) if extensionEnabled(Ext_Zca)
@@ -380,6 +401,7 @@ mapping clause assembly = C_J(imm)
   <-> "c.j" ^ spc() ^ hex_bits_signed_11(imm)
 
 /* ****************************************************************** */
+$[name "branch if equals zero (compressed)"]
 union clause ast = C_BEQZ : (bits(8), cregidx)
 
 mapping clause encdec_compressed = C_BEQZ(i8 @ i76 @ i5 @ i43 @ i21, rs) if extensionEnabled(Ext_Zca)
@@ -392,6 +414,7 @@ mapping clause assembly = C_BEQZ(imm, rs)
   <-> "c.beqz" ^ spc() ^ creg_name(rs) ^ sep() ^ hex_bits_signed_8(imm)
 
 /* ****************************************************************** */
+$[name "branch if not equals zero (compressed)"]
 union clause ast = C_BNEZ : (bits(8), cregidx)
 
 mapping clause encdec_compressed = C_BNEZ(i8 @ i76 @ i5 @ i43 @ i21, rs) if extensionEnabled(Ext_Zca)
@@ -404,6 +427,7 @@ mapping clause assembly = C_BNEZ(imm, rs)
   <-> "c.bnez" ^ spc() ^ creg_name(rs) ^ sep() ^ hex_bits_signed_8(imm)
 
 /* ****************************************************************** */
+$[name "shift left (logical) immediate (compressed)"]
 union clause ast = C_SLLI : (bits(6), regidx)
 
 mapping clause encdec_compressed = C_SLLI(nzui5 @ nzui40, rsd)
@@ -420,6 +444,7 @@ mapping clause assembly = C_SLLI(shamt, rsd)
       if shamt != 0b000000 & rsd != zreg
 
 /* ****************************************************************** */
+$[name "load word from stack pointer (compressed)"]
 union clause ast = C_LWSP : (bits(6), regidx)
 
 mapping clause encdec_compressed = C_LWSP(ui76 @ ui5 @ ui42, rd)
@@ -438,6 +463,7 @@ mapping clause assembly = C_LWSP(uimm, rd)
       if rd != zreg
 
 /* ****************************************************************** */
+$[name "load double-word from stack pointer (compressed)"]
 union clause ast = C_LDSP : (bits(6), regidx)
 
 mapping clause encdec_compressed = C_LDSP(ui86 @ ui5 @ ui43, rd)
@@ -456,6 +482,7 @@ mapping clause assembly = C_LDSP(uimm, rd)
       if rd != zreg & sizeof(xlen) == 64
 
 /* ****************************************************************** */
+$[name "store word to stack pointer (compressed)"]
 union clause ast = C_SWSP : (bits(6), regidx)
 
 mapping clause encdec_compressed = C_SWSP(ui76 @ ui52, rs2)
@@ -472,6 +499,7 @@ mapping clause assembly = C_SWSP(uimm, rs2)
   <-> "c.swsp" ^ spc() ^ reg_name(rs2) ^ sep() ^ hex_bits_6(uimm)
 
 /* ****************************************************************** */
+$[name "store double-word to stack pointer (compressed)"]
 union clause ast = C_SDSP : (bits(6), regidx)
 
 mapping clause encdec_compressed = C_SDSP(ui86 @ ui53, rs2)
@@ -490,6 +518,7 @@ mapping clause assembly = C_SDSP(uimm, rs2)
       if sizeof(xlen) == 64
 
 /* ****************************************************************** */
+$[name "jump register (compressed)"]
 union clause ast = C_JR : (regidx)
 
 mapping clause encdec_compressed = C_JR(rs1)
@@ -506,6 +535,7 @@ mapping clause assembly = C_JR(rs1)
       if rs1 != zreg
 
 /* ****************************************************************** */
+$[name "jump and link register (compressed)"]
 union clause ast = C_JALR : (regidx)
 
 mapping clause encdec_compressed = C_JALR(rs1)
@@ -522,6 +552,7 @@ mapping clause assembly = C_JALR(rs1)
       if rs1 != zreg
 
 /* ****************************************************************** */
+$[name "move (compressed)"]
 union clause ast = C_MV : (regidx, regidx)
 
 mapping clause encdec_compressed = C_MV(rd, rs2)
@@ -538,6 +569,7 @@ mapping clause assembly = C_MV(rd, rs2)
       if rd != zreg & rs2 != zreg
 
 /* ****************************************************************** */
+$[name "environment breakpoint (compressed)"]
 union clause ast = C_EBREAK : unit
 
 mapping clause encdec_compressed = C_EBREAK() if extensionEnabled(Ext_Zca)
@@ -549,6 +581,7 @@ function clause execute C_EBREAK() =
 mapping clause assembly = C_EBREAK() <-> "c.ebreak"
 
 /* ****************************************************************** */
+$[name "add (compressed)"]
 union clause ast = C_ADD : (regidx, regidx)
 
 mapping clause encdec_compressed = C_ADD(rsd, rs2)
