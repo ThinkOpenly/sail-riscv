@@ -7,7 +7,7 @@
 /*=======================================================================================*/
 
 /* ****************************************************************** */
-$[name "Carry-less multiply (low-part)"]
+$[name "carry-less multiply (low-part)"]
 union clause ast = RISCV_CLMUL : (regidx, regidx, regidx)
 
 mapping clause encdec = RISCV_CLMUL(rs2, rs1, rd) if extension("Zbc") | extension("Zbkc")
@@ -27,7 +27,7 @@ function clause execute (RISCV_CLMUL(rs2, rs1, rd)) = {
 }
 
 /* ****************************************************************** */
-$[name "Carry-less multiply (high-part)"]
+$[name "carry-less multiply (high-part)"]
 union clause ast = RISCV_CLMULH : (regidx, regidx, regidx)
 
 mapping clause encdec = RISCV_CLMULH(rs2, rs1, rd) if extension("Zbc") | extension("Zbkc")
@@ -47,7 +47,7 @@ function clause execute (RISCV_CLMULH(rs2, rs1, rd)) = {
 }
 
 /* ****************************************************************** */
-$[name "Carry-less multiply (reversed)"]
+$[name "carry-less multiply (reversed)"]
 union clause ast = RISCV_CLMULR : (regidx, regidx, regidx)
 
 mapping clause encdec = RISCV_CLMULR(rs2, rs1, rd) if extension("Zbc")
