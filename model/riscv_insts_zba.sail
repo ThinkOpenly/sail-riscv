@@ -7,7 +7,7 @@
 /*=======================================================================================*/
 
 /* ****************************************************************** */
-$[name "Shift-left unsigned word (Immediate)"]
+$[name "shift-left unsigned word (immediate)"]
 union clause ast = RISCV_SLLIUW : (bits(6), regidx, regidx)
 
 mapping clause encdec = RISCV_SLLIUW(shamt, rs1, rd) if extension("Zba") & sizeof(xlen) == 64
@@ -39,13 +39,13 @@ mapping clause encdec = ZBA_RTYPEUW(rs2, rs1, rd, RISCV_SH3ADDUW) if extension("
   <-> 0b0010000 @ rs2 @ rs1 @ 0b110 @ rd @ 0b0111011 if extension("Zba") & sizeof(xlen) == 64
 
 mapping zba_rtypeuw_mnemonic : bropw_zba <-> string = {
-  $[name "Add unsigned word"]
+  $[name "add unsigned word"]
   RISCV_ADDUW    <-> "add.uw",
-  $[name "Shift unsigned word left by 1 and add"]
+  $[name "shift unsigned word left by 1 and add"]
   RISCV_SH1ADDUW <-> "sh1add.uw",
-  $[name "Shift unsigned word left by 2 and add"]
+  $[name "shift unsigned word left by 2 and add"]
   RISCV_SH2ADDUW <-> "sh2add.uw",
-  $[name "Shift unsigned word left by 3 and add"]
+  $[name "shift unsigned word left by 3 and add"]
   RISCV_SH3ADDUW <-> "sh3add.uw"
 }
 
@@ -77,11 +77,11 @@ mapping clause encdec = ZBA_RTYPE(rs2, rs1, rd, RISCV_SH3ADD) if extension("Zba"
   <-> 0b0010000 @ rs2 @ rs1 @ 0b110 @ rd @ 0b0110011 if extension("Zba")
 
 mapping zba_rtype_mnemonic : brop_zba <-> string = {
-  $[name "Shift left by 1 and add"]
+  $[name "shift left by 1 and add"]
   RISCV_SH1ADD <-> "sh1add",
-  $[name "Shift left by 2 and add"]
+  $[name "shift left by 2 and add"]
   RISCV_SH2ADD <-> "sh2add",
-  $[name "Shift left by 3 and add"]
+  $[name "shift left by 3 and add"]
   RISCV_SH3ADD <-> "sh3add"
 }
 
