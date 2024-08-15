@@ -7,7 +7,7 @@
 /*=======================================================================================*/
 
 /* ****************************************************************** */
-$[name "Crossbar permutation (bytes)"]
+$[name "crossbar permutation (bytes)"]
 union clause ast = RISCV_XPERM8 : (regidx, regidx, regidx)
 
 mapping clause encdec = RISCV_XPERM8(rs2, rs1, rd) if extension("Zbkx")
@@ -31,7 +31,7 @@ function clause execute (RISCV_XPERM8(rs2, rs1, rd)) = {
 }
 
 /* ****************************************************************** */
-$[name "Crossbar permutation (nibbles)"]
+$[name "crossbar permutation (nibbles)"]
 union clause ast = RISCV_XPERM4 : (regidx, regidx, regidx)
 
 mapping clause encdec = RISCV_XPERM4(rs2, rs1, rd) if extension("Zbkx")
