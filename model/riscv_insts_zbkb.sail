@@ -16,9 +16,9 @@ mapping clause encdec = ZBKB_RTYPE(rs2, rs1, rd, RISCV_PACKH) if extensionEnable
   <-> 0b0000100 @ rs2 @ rs1 @ 0b111 @ rd @ 0b0110011 if extensionEnabled(Ext_Zbkb)
 
 mapping zbkb_rtype_mnemonic : brop_zbkb <-> string = {
-  $[name "Pack low halves of registers"]
+  $[name "pack low halves of registers"]
   RISCV_PACK  <-> "pack",
-  $[name "Pack low bytes of registers"]
+  $[name "pack low bytes of registers"]
   RISCV_PACKH <-> "packh"
 }
 
@@ -37,7 +37,7 @@ function clause execute (ZBKB_RTYPE(rs2, rs1, rd, op)) = {
 }
 
 /* ****************************************************************** */
-$[name "Pack low 16-bits of registers (RV64)"]
+$[name "pack low 16-bits of registers (RV64)"]
 union clause ast = ZBKB_PACKW : (regidx, regidx, regidx)
 
 mapping clause encdec = ZBKB_PACKW(rs2, rs1, rd) if extensionEnabled(Ext_Zbkb) & sizeof(xlen) == 64
@@ -56,7 +56,7 @@ function clause execute (ZBKB_PACKW(rs2, rs1, rd)) = {
 }
 
 /* ****************************************************************** */
-$[name "Bit interleave"]
+$[name "bit interleave"]
 union clause ast = RISCV_ZIP : (regidx, regidx)
 
 mapping clause encdec = RISCV_ZIP(rs1, rd) if extensionEnabled(Ext_Zbkb) & sizeof(xlen) == 32
@@ -78,7 +78,7 @@ function clause execute (RISCV_ZIP(rs1, rd)) = {
 }
 
 /* ****************************************************************** */
-$[name "Bit deinterleave"]
+$[name "bit deinterleave"]
 union clause ast = RISCV_UNZIP : (regidx, regidx)
 
 mapping clause encdec = RISCV_UNZIP(rs1, rd) if extensionEnabled(Ext_Zbkb) & sizeof(xlen) == 32
@@ -100,7 +100,7 @@ function clause execute (RISCV_UNZIP(rs1, rd)) = {
 }
 
 /* ****************************************************************** */
-$[name "Reverse bits in bytes"]
+$[name "reverse bits in bytes"]
 union clause ast = RISCV_BREV8 : (regidx, regidx)
 
 mapping clause encdec = RISCV_BREV8(rs1, rd) if extensionEnabled(Ext_Zbkb)
