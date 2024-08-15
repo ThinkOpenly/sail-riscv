@@ -25,13 +25,13 @@ mapping clause encdec = ZBS_IOP(shamt, rs1, rd, RISCV_BSETI) if extensionEnabled
   <-> 0b001010 @ shamt @ rs1 @ 0b001 @ rd @ 0b0010011 if extensionEnabled(Ext_Zbs) & (sizeof(xlen) == 64 | shamt[5] == bitzero)
 
 mapping zbs_iop_mnemonic : biop_zbs <-> string = {
-  $[name "Single-Bit Clear (Immediate)"]
+  $[name "single-bit clear (immediate)"]
   RISCV_BCLRI <-> "bclri",
-  $[name "Single-Bit Extract (Immediate)"]
+  $[name "single-bit extract (immediate)"]
   RISCV_BEXTI <-> "bexti",
-  $[name "Single-Bit Invert (Immediate)"]
+  $[name "single-bit invert (immediate)"]
   RISCV_BINVI <-> "binvi",
-  $[name "Single-Bit Set (Immediate)"]
+  $[name "single-bit set (immediate)"]
   RISCV_BSETI <-> "bseti"
 }
 
@@ -69,13 +69,13 @@ mapping clause encdec = ZBS_RTYPE(rs2, rs1, rd, RISCV_BSET) if extensionEnabled(
   <-> 0b0010100 @ rs2 @ rs1 @ 0b001 @ rd @ 0b0110011 if extensionEnabled(Ext_Zbs)
 
 mapping zbs_rtype_mnemonic : brop_zbs <-> string = {
-  $[name "Single-Bit Clear (Register)"]
+  $[name "single-bit clear (register)"]
   RISCV_BCLR    <-> "bclr",
-  $[name "Single-Bit Extract (Register)"]
+  $[name "single-bit extract (register)"]
   RISCV_BEXT    <-> "bext",
-  $[name "Single-Bit Invert (Register)"]
+  $[name "single-bit invert (register)"]
   RISCV_BINV    <-> "binv",
-  $[name "Single-Bit Set (Register)"]
+  $[name "single-bit set (register)"]
   RISCV_BSET    <-> "bset"
 }
 
