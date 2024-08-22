@@ -180,11 +180,17 @@ function clause execute (BTYPE(imm, rs2, rs1, op)) = {
 }
 
 mapping btype_mnemonic : bop <-> string = {
+  $[name "branch if equal"]
   RISCV_BEQ  <-> "beq",
+  $[name "branch if not equal"]
   RISCV_BNE  <-> "bne",
+  $[name "branch if less than"]
   RISCV_BLT  <-> "blt",
+  $[name "branch if greater than"]
   RISCV_BGE  <-> "bge",
+  $[name "branch if less than (unsigned)"]
   RISCV_BLTU <-> "bltu",
+  $[name "branch if greater than or equal to (unsigned)"]
   RISCV_BGEU <-> "bgeu"
 }
 
@@ -300,8 +306,11 @@ function clause execute (SHIFTIOP(shamt, rs1, rd, op)) = {
 }
 
 mapping shiftiop_mnemonic : sop <-> string = {
+  $[name "shift left (logical) immediate"]
   RISCV_SLLI <-> "slli",
+  $[name "shift right (logical) immediate"]
   RISCV_SRLI <-> "srli",
+  $[name "shift right (arithmetic) immediate"]
   RISCV_SRAI <-> "srai"
 }
 
@@ -649,8 +658,11 @@ function clause execute (SHIFTIWOP(shamt, rs1, rd, op)) = {
 }
 
 mapping shiftiwop_mnemonic : sopw <-> string = {
+  $[name "shift left (logical) immediate word (RV64)"]
   RISCV_SLLIW <-> "slliw",
+  $[name "shift right (logical) immediate word (RV64)"]
   RISCV_SRLIW <-> "srliw",
+  $[name "shift right (arithmetic) immediate word (RV64)"]
   RISCV_SRAIW <-> "sraiw"
 }
 
