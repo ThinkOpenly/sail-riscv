@@ -134,6 +134,10 @@ union AccessType ('a : Type) = {
   Execute   : unit
 }
 
+enum reserved_bits_enum = { ZERO }
+mapping reserved_bits_5 : reserved_bits_enum <-> bits(5) = { ZERO <-> 0b00000 }
+mapping reserved_bits_12 : reserved_bits_enum <-> bits(12) = { ZERO <-> 0b000000000000 }
+
 enum word_width = {BYTE, HALF, WORD, DOUBLE}
 
 /* architectural interrupt definitions */
